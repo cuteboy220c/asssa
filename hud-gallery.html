@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HUD Gallery - JUTTFHX Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/theme.css">
+<style>
+.hud-hero{padding:120px 0 60px;background:var(--gradient-hero);position:relative;overflow:hidden;}
+.hud-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;}
+.hud-card{background:var(--gradient-card);border:1px solid var(--border-glass);border-radius:var(--radius-lg);overflow:hidden;transition:var(--transition);cursor:pointer;}
+.hud-card:hover{transform:translateY(-4px);border-color:rgba(0,170,255,0.3);box-shadow:var(--shadow-hover);}
+.hud-preview{height:180px;background:linear-gradient(135deg,#020408,#050d1a);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;font-size:3rem;}
+.hud-preview-label{position:absolute;top:10px;left:10px;font-size:0.7rem;background:rgba(0,0,0,0.7);padding:3px 8px;border-radius:4px;color:var(--text-muted);}
+.hud-body{padding:1.25rem;}
+.hud-title{font-weight:700;font-size:0.95rem;margin-bottom:0.25rem;}
+.hud-author{font-size:0.75rem;color:var(--text-muted);margin-bottom:0.75rem;}
+.hud-meta{display:flex;align-items:center;justify-content:space-between;}
+.hud-code-box{background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.15);border-radius:8px;padding:0.75rem;margin:0.75rem 0;display:flex;align-items:center;justify-content:space-between;gap:0.75rem;}
+.hud-code{font-family:monospace;font-size:0.75rem;color:var(--accent-blue);word-break:break-all;flex:1;}
+.copy-code-btn{font-size:0.75rem;white-space:nowrap;}
+.hud-modal-preview{width:100%;height:250px;background:linear-gradient(135deg,#020408,#050d1a);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:5rem;margin-bottom:1.5rem;}
+</style>
+</head>
+<body>
+<div id="loading-screen"><div class="loading-logo">HUD</div><div class="loading-bar"><div class="loading-bar-fill"></div></div><div class="loading-text">Loading HUD Gallery...</div></div>
+<div class="aurora-bg"></div>
+
+<nav class="navbar" id="navbar">
+  <a href="/index.html" class="navbar-brand"><div class="navbar-logo">JX</div><span class="navbar-title">JUTTFHX <span>Hub</span></span></a>
+  <ul class="navbar-nav" id="nav-links">
+    <li><a href="/index.html">Home</a></li><li><a href="/device.html">Devices</a></li>
+    <li><a href="/sensitivity.html">Sensitivity</a></li><li><a href="/leaderboard.html">Leaderboard</a></li>
+    <li><a href="/hud-gallery.html" class="active">HUD</a></li><li><a href="/blog.html">Blog</a></li>
+  </ul>
+  <div class="navbar-actions"><a href="/login.html" class="btn-nav-login">Login</a><a href="/register.html" class="btn-nav-cta">Join Free</a></div>
+  <button class="navbar-hamburger" onclick="document.getElementById('nav-links').classList.toggle('mobile-open')">&#9776;</button>
+</nav>
+
+<section class="hud-hero">
+  <div class="container" style="position:relative;z-index:2;text-align:center">
+    <div class="section-eyebrow">Community HUDs</div>
+    <h1 class="section-title">HUD <span class="highlight">Gallery</span></h1>
+    <p class="section-desc">Browse and copy the best Free Fire HUD layouts created by the community.</p>
+    <div style="max-width:500px;margin:1.5rem auto 0;position:relative">
+      <input type="text" class="form-input" style="padding:0.9rem 1.25rem 0.9rem 3rem" placeholder="Search HUD layouts..." oninput="searchHUDs(this.value)">
+      <span style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--text-muted)">&#128269;</span>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="margin-top:-2rem">
+  <div class="container">
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1.5rem" id="hud-filters">
+      <button class="filter-chip active" onclick="filterHUD('all',this)">All HUDs</button>
+      <button class="filter-chip" onclick="filterHUD('pro',this)">Pro Player</button>
+      <button class="filter-chip" onclick="filterHUD('mobile',this)">Mobile</button>
+      <button class="filter-chip" onclick="filterHUD('tablet',this)">Tablet</button>
+      <button class="filter-chip" onclick="filterHUD('4finger',this)">4 Finger</button>
+      <button class="filter-chip" onclick="filterHUD('claw',this)">Claw Style</button>
+      <button class="filter-chip" onclick="filterHUD('thumb',this)">Thumb</button>
+    </div>
+    <div class="hud-grid" id="hud-grid"></div>
+  </div>
+</section>
+
+<!-- HUD Detail Modal -->
+<div class="modal-overlay" id="hud-modal">
+  <div class="modal" style="max-width:600px">
+    <button class="modal-close" onclick="document.getElementById('hud-modal').classList.remove('open')">&times;</button>
+    <div id="hud-modal-body"></div>
+  </div>
+</div>
+
+<footer class="footer"><div class="container"><div class="footer-bottom"><span class="footer-copy">&copy; 2025 JUTTFHX Sensitivity Hub</span></div></div></footer>
+
+<script src="/assets/js/main.js"></script>
+<script>
+const HUDS = [
+  {id:1,title:'Pro Headshot HUD',author:'JUTTFHX_PRO',category:'pro',emoji:'🎮',likes:1240,downloads:3400,code:'JX-PRO-V2.1-HH',tags:['4 Finger','Aggressive'],desc:'Optimized for maximum headshot accuracy with strategic button placement for claw players.'},
+  {id:2,title:'Smooth Drag Layout',author:'DragonFF',category:'4finger',emoji:'🕹️',likes:890,downloads:2100,code:'DF-DRAG-3.0-SD',tags:['Drag Shot','4 Finger'],desc:'Perfect for drag headshot technique. Buttons placed for smooth arc movements.'},
+  {id:3,title:'Tablet Beast HUD',author:'TabletKing',category:'tablet',emoji:'📱',likes:654,downloads:1200,code:'TK-TABLET-PRO',tags:['Tablet','6 Finger'],desc:'Designed specifically for large-screen tablet players with 6-finger setup.'},
+  {id:4,title:'Thumb Master',author:'ThumbGod99',category:'thumb',emoji:'👍',likes:1102,downloads:2800,code:'TG-THUMB-V4',tags:['Thumb','Beginner'],desc:'Perfect for 2-thumb players. Clean layout with comfortable reach zones.'},
+  {id:5,title:'Claw Hunter',author:'ClawMaster',category:'claw',emoji:'🦅',likes:776,downloads:1950,code:'CM-CLAW-X3',tags:['Claw','Advanced'],desc:'Advanced claw layout with micro-adjustments for competitive play.'},
+  {id:6,title:'Mobile Rush HUD',author:'SpeedRunner',category:'mobile',emoji:'⚡',likes:543,downloads:1400,code:'SR-RUSH-MOB',tags:['Mobile','Rush'],desc:'High-mobility layout for fast-paced aggressive rushing style.'},
+  {id:7,title:'Sniper Pro Setup',author:'SniperElite',category:'pro',emoji:'🎯',likes:921,downloads:2350,code:'SE-SNIPE-V2',tags:['Sniper','Tactical'],desc:'Tactical layout with dedicated scope buttons and comfortable ADSing.'},
+  {id:8,title:'Balanced Warrior',author:'BalanceGuru',category:'mobile',emoji:'⚖️',likes:678,downloads:1750,code:'BG-BALANCED-1',tags:['Balanced','All-Round'],desc:'Well-balanced HUD suitable for all playstyles and game modes.'},
+  {id:9,title:'4 Finger Esports',author:'ESports_Elite',category:'4finger',emoji:'🏆',likes:1350,downloads:3200,code:'EE-4FINGER-ES',tags:['4 Finger','Esports'],desc:'Tournament-grade 4-finger layout used by competitive esports players.'},
+];
+let filteredHUDs = [...HUDS];
+
+function renderHUDs(data) {
+  document.getElementById('hud-grid').innerHTML = data.map(h => `
+    <div class="hud-card" onclick="openHUD(${h.id})">
+      <div class="hud-preview">${h.emoji}<div class="hud-preview-label">${h.tags[0]}</div></div>
+      <div class="hud-body">
+        <div class="hud-title">${h.title}</div>
+        <div class="hud-author">by ${h.author}</div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.75rem">${h.tags.map(t=>'<span class="badge badge-blue" style="font-size:0.65rem">'+t+'</span>').join('')}</div>
+        <div class="hud-code-box">
+          <span class="hud-code">${h.code}</span>
+          <button class="btn btn-primary btn-sm copy-code-btn" onclick="event.stopPropagation();copyToClipboard('${h.code}','HUD code copied!')">Copy</button>
+        </div>
+        <div class="hud-meta">
+          <span style="font-size:0.8rem;color:var(--text-muted)">&#9829; ${h.likes} &nbsp; &#11015;&#65039; ${h.downloads}</span>
+          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();likeHUD(${h.id},this)">&#9825; Like</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+window.filterHUD = function(cat, btn) {
+  document.querySelectorAll('#hud-filters .filter-chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  filteredHUDs = cat==='all' ? [...HUDS] : HUDS.filter(h=>h.category===cat);
+  renderHUDs(filteredHUDs);
+};
+
+window.searchHUDs = function(q) {
+  const lower = q.toLowerCase();
+  renderHUDs(q ? HUDS.filter(h=>h.title.toLowerCase().includes(lower)||h.author.toLowerCase().includes(lower)||h.tags.some(t=>t.toLowerCase().includes(lower))) : filteredHUDs);
+};
+
+window.openHUD = function(id) {
+  const h = HUDS.find(x=>x.id===id); if(!h) return;
+  document.getElementById('hud-modal-body').innerHTML = `
+    <div class="hud-modal-preview">${h.emoji}</div>
+    <div class="modal-title">${h.title}</div>
+    <p style="color:var(--text-secondary);font-size:0.875rem;margin-bottom:1rem">${h.desc}</p>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.25rem">${h.tags.map(t=>'<span class="badge badge-blue">'+t+'</span>').join('')}</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1.5rem;text-align:center">
+      <div class="card" style="padding:0.75rem"><div style="font-family:var(--font-display);font-size:1.2rem;color:var(--accent-gold)">${h.likes}</div><div style="font-size:0.72rem;color:var(--text-muted)">Likes</div></div>
+      <div class="card" style="padding:0.75rem"><div style="font-family:var(--font-display);font-size:1.2rem;color:var(--accent-blue)">${h.downloads}</div><div style="font-size:0.72rem;color:var(--text-muted)">Downloads</div></div>
+      <div class="card" style="padding:0.75rem"><div style="font-family:var(--font-display);font-size:0.9rem;color:var(--text-primary)">${h.author}</div><div style="font-size:0.72rem;color:var(--text-muted)">Author</div></div>
+    </div>
+    <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.5rem">HUD CODE</div>
+    <div class="hud-code-box">
+      <span class="hud-code" style="font-size:1rem">${h.code}</span>
+      <button class="btn btn-primary" onclick="copyToClipboard('${h.code}','HUD code copied!')">Copy Code</button>
+    </div>
+    <div style="font-size:0.8rem;color:var(--text-muted);margin-top:1rem">To use: Open Free Fire > Settings > Controls > Import Settings > Enter Code</div>`;
+  document.getElementById('hud-modal').classList.add('open');
+};
+
+window.likeHUD = function(id, btn) {
+  btn.style.color='var(--accent-gold)'; btn.textContent='❤️ Liked';
+  showToast('HUD liked!', 'success');
+};
+
+renderHUDs(filteredHUDs);
+</script>
+</body>
+</html>

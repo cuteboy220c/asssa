@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JUTTFHX Sensitivity Hub - Premium Free Fire Platform</title>
+<meta name="description" content="The world's most advanced Free Fire sensitivity & device analytics platform. AI-powered sensitivity generator, device database, community features and more.">
+<meta name="theme-color" content="#00aaff">
+<link rel="manifest" href="/pwa/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/theme.css">
+<style>
+.hero-visual { position: relative; }
+.hero-phone-mockup {
+  width: 280px;
+  height: 560px;
+  background: linear-gradient(145deg, rgba(0,30,60,0.9), rgba(0,10,25,0.95));
+  border: 1px solid rgba(0,170,255,0.25);
+  border-radius: 40px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 60px rgba(0,170,255,0.15);
+  animation: float 4s ease-in-out infinite;
+  margin: 0 auto;
+}
+.hero-phone-screen {
+  position: absolute;
+  inset: 8px;
+  background: var(--bg-primary);
+  border-radius: 33px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.phone-topbar {
+  background: rgba(0,170,255,0.1);
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.6rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(0,170,255,0.1);
+}
+.phone-content { padding: 0.75rem; flex: 1; }
+.phone-sens-card {
+  background: rgba(0,170,255,0.06);
+  border: 1px solid rgba(0,170,255,0.15);
+  border-radius: 10px;
+  padding: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+.phone-sens-label { font-size: 0.55rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.phone-sens-val { font-family: var(--font-display); font-size: 1rem; font-weight: 700; color: var(--accent-blue); }
+.phone-mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+.phone-mini-card {
+  background: rgba(5,10,20,0.8);
+  border: 1px solid rgba(0,170,255,0.1);
+  border-radius: 8px;
+  padding: 0.5rem;
+  text-align: center;
+}
+.phone-mini-label { font-size: 0.5rem; color: var(--text-muted); }
+.phone-mini-val { font-size: 0.75rem; font-weight: 700; color: var(--accent-gold); }
+.glowing-ring {
+  position: absolute;
+  width: 350px; height: 350px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(0,170,255,0.08);
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  animation: rotateGlow 20s linear infinite;
+}
+.glowing-ring-2 {
+  width: 450px; height: 450px;
+  border-color: rgba(255,215,0,0.05);
+  animation-duration: 30s;
+  animation-direction: reverse;
+}
+.features-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.feature-card {
+  background: var(--gradient-card);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  transition: var(--transition);
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+.feature-card:hover { transform: translateY(-5px); border-color: rgba(0,170,255,0.3); box-shadow: var(--shadow-blue); }
+.feature-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(0,170,255,0.05) 0%, transparent 70%);
+  opacity: 0;
+  transition: var(--transition);
+}
+.feature-card:hover::after { opacity: 1; }
+.feature-icon { font-size: 2rem; margin-bottom: 0.75rem; display: block; }
+.feature-title { font-family: var(--font-display); font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.3rem; }
+.feature-desc { font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; }
+.trusted-bar {
+  background: rgba(5,10,20,0.8);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.trusted-item { text-align: center; }
+.trusted-val { font-family: var(--font-display); font-size: 1.5rem; font-weight: 900; color: var(--accent-blue); }
+.trusted-label { font-size: 0.72rem; color: var(--text-muted); letter-spacing: 0.5px; }
+.latest-section { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
+.activity-feed-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.activity-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+.activity-text { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.4; }
+.activity-time { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem; }
+.brand-scroll {
+  display: flex;
+  gap: 2rem;
+  animation: scroll-x 20s linear infinite;
+  width: max-content;
+}
+.brand-item {
+  background: var(--gradient-card);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 1.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+  transition: var(--transition);
+}
+@keyframes scroll-x { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.cta-section {
+  background: linear-gradient(135deg, rgba(0,60,130,0.3), rgba(0,30,70,0.2));
+  border: 1px solid rgba(0,170,255,0.15);
+  border-radius: var(--radius-xl);
+  padding: 4rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(ellipse, rgba(0,100,255,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+@media (max-width:1024px) { .features-grid { grid-template-columns: repeat(3, 1fr); } .latest-section { grid-template-columns: 1fr; } }
+@media (max-width:768px) { .features-grid { grid-template-columns: repeat(2, 1fr); } .cta-section { padding: 2.5rem 1.5rem; } }
+</style>
+</head>
+<body>
+<!-- LOADING SCREEN -->
+<div id="loading-screen">
+  <div class="loading-logo">JUTTFHX</div>
+  <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+  <div class="loading-text">Loading Sensitivity Hub...</div>
+</div>
+
+<!-- AURORA -->
+<div class="aurora-bg"></div>
+<canvas id="particles-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.5"></canvas>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <a href="/index.html" class="navbar-brand">
+    <div class="navbar-logo">JX</div>
+    <span class="navbar-title">JUTTFHX <span>Hub</span></span>
+  </a>
+  <ul class="navbar-nav" id="nav-links">
+    <li><a href="/index.html" class="active">Home</a></li>
+    <li><a href="/device.html">Devices</a></li>
+    <li><a href="/sensitivity.html">Sensitivity</a></li>
+    <li><a href="/leaderboard.html">Leaderboard</a></li>
+    <li><a href="/hud-gallery.html">HUD</a></li>
+    <li><a href="/blog.html">Blog</a></li>
+    <li><a href="/tournaments.html">Events</a></li>
+  </ul>
+  <div class="navbar-actions" id="nav-actions">
+    <a href="/login.html" class="btn-nav-login">Login</a>
+    <a href="/register.html" class="btn-nav-cta">Join Free</a>
+  </div>
+  <button class="navbar-hamburger" onclick="document.getElementById('nav-links').classList.toggle('mobile-open');document.getElementById('nav-actions').classList.toggle('mobile-open')">&#9776;</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="container" style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;padding-top:2rem">
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="hero-eyebrow-dot"></span>
+        #1 FREE FIRE SENSITIVITY PLATFORM
+      </div>
+      <h1 class="hero-title">
+        Master Your<br>
+        <span class="gradient-text">Sensitivity</span><br>
+        with AI Power
+      </h1>
+      <p class="hero-desc">The world's most advanced Free Fire sensitivity generator. Get AI-optimized settings for your exact device, playstyle, and skill level. Trusted by 500K+ players globally.</p>
+      <div class="hero-actions">
+        <a href="/sensitivity.html" class="btn btn-primary btn-lg">
+          <span>&#9889;</span> Generate Sensitivity
+        </a>
+        <a href="/device.html" class="btn btn-outline btn-lg">
+          <span>&#128269;</span> Find Your Device
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-value">500<span>K+</span></div>
+          <div class="hero-stat-label">Active Players</div>
+        </div>
+        <div>
+          <div class="hero-stat-value">2<span>K+</span></div>
+          <div class="hero-stat-label">Devices Listed</div>
+        </div>
+        <div>
+          <div class="hero-stat-value">98<span>%</span></div>
+          <div class="hero-stat-label">Accuracy Rate</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual" style="display:flex;justify-content:center;position:relative">
+      <div class="glowing-ring"></div>
+      <div class="glowing-ring glowing-ring-2"></div>
+      <div class="hero-phone-mockup">
+        <div class="hero-phone-screen">
+          <div class="phone-topbar">
+            <span style="font-weight:700;color:var(--accent-blue);font-size:0.6rem">JX</span>
+            <span>AI Sensitivity</span>
+            <span style="color:var(--accent-gold)">&#11088; 4.9</span>
+          </div>
+          <div class="phone-content">
+            <div class="phone-sens-card">
+              <div class="phone-sens-label">General Sensitivity</div>
+              <div class="phone-sens-val" id="hero-gen-sens">95</div>
+            </div>
+            <div class="phone-mini-grid">
+              <div class="phone-mini-card">
+                <div class="phone-mini-label">Red Dot</div>
+                <div class="phone-mini-val">72</div>
+              </div>
+              <div class="phone-mini-card">
+                <div class="phone-mini-label">2x Scope</div>
+                <div class="phone-mini-val">68</div>
+              </div>
+              <div class="phone-mini-card">
+                <div class="phone-mini-label">4x Scope</div>
+                <div class="phone-mini-val">55</div>
+              </div>
+              <div class="phone-mini-card">
+                <div class="phone-mini-label">Sniper</div>
+                <div class="phone-mini-val">32</div>
+              </div>
+            </div>
+            <div style="margin-top:0.75rem;background:rgba(0,170,255,0.08);border:1px solid rgba(0,170,255,0.15);border-radius:8px;padding:0.5rem;">
+              <div style="font-size:0.5rem;color:var(--text-muted);margin-bottom:0.3rem">AI CONFIDENCE</div>
+              <div class="progress-bar"><div class="progress-fill" style="width:92%" data-width="92%"></div></div>
+              <div style="text-align:right;font-size:0.6rem;color:var(--accent-blue);margin-top:0.2rem">92%</div>
+            </div>
+            <div style="margin-top:0.5rem;text-align:center;">
+              <div style="background:linear-gradient(135deg,var(--accent-blue),#0055aa);color:white;border:none;border-radius:8px;padding:0.5rem;font-size:0.65rem;font-weight:700;cursor:pointer;width:100%;font-family:var(--font-primary)">&#9889; Generate Free</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRANDS SCROLL -->
+<section style="padding:2rem 0;overflow:hidden;border-top:1px solid var(--border-glass);border-bottom:1px solid var(--border-glass);background:rgba(5,10,20,0.5);position:relative;z-index:2">
+  <div style="overflow:hidden">
+    <div class="brand-scroll">
+      <span class="brand-item">&#128241; Samsung</span>
+      <span class="brand-item">&#128241; Xiaomi</span>
+      <span class="brand-item">&#128241; Realme</span>
+      <span class="brand-item">&#128241; OPPO</span>
+      <span class="brand-item">&#128241; OnePlus</span>
+      <span class="brand-item">&#128241; POCO</span>
+      <span class="brand-item">&#128241; Vivo</span>
+      <span class="brand-item">&#128241; Infinix</span>
+      <span class="brand-item">&#128241; Tecno</span>
+      <span class="brand-item">&#128241; ASUS ROG</span>
+      <span class="brand-item">&#128241; Redmi</span>
+      <span class="brand-item">&#128241; iPhone</span>
+      <span class="brand-item">&#128241; Samsung</span>
+      <span class="brand-item">&#128241; Xiaomi</span>
+      <span class="brand-item">&#128241; Realme</span>
+      <span class="brand-item">&#128241; OPPO</span>
+      <span class="brand-item">&#128241; OnePlus</span>
+      <span class="brand-item">&#128241; POCO</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES GRID -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Platform Features</div>
+      <h2 class="section-title">Everything You Need to <span class="highlight">Dominate</span></h2>
+      <p class="section-desc">28 premium tools designed for serious Free Fire players. From AI sensitivity to device analytics.</p>
+    </div>
+    <div class="features-grid">
+      <a href="/sensitivity.html" class="feature-card">
+        <span class="feature-icon">&#9889;</span>
+        <div class="feature-title">AI Sensitivity</div>
+        <div class="feature-desc">Get AI-optimized sensitivity for your device & playstyle</div>
+      </a>
+      <a href="/device.html" class="feature-card">
+        <span class="feature-icon">&#128241;</span>
+        <div class="feature-title">Device Database</div>
+        <div class="feature-desc">2000+ devices with full specs and performance scores</div>
+      </a>
+      <a href="/sensitivity.html#headshot" class="feature-card">
+        <span class="feature-icon">&#127919;</span>
+        <div class="feature-title">Headshot Calc</div>
+        <div class="feature-desc">Perfect headshot sensitivity calculator</div>
+      </a>
+      <a href="/sensitivity.html#drag" class="feature-card">
+        <span class="feature-icon">&#128200;</span>
+        <div class="feature-title">Drag Calculator</div>
+        <div class="feature-desc">Smart drag shot sensitivity optimizer</div>
+      </a>
+      <a href="/device.html#analyzer" class="feature-card">
+        <span class="feature-icon">&#128296;</span>
+        <div class="feature-title">Performance Analyzer</div>
+        <div class="feature-desc">Deep device performance scoring system</div>
+      </a>
+      <a href="/device.html#battle" class="feature-card">
+        <span class="feature-icon">&#9876;&#65039;</span>
+        <div class="feature-title">Device Battle</div>
+        <div class="feature-desc">Compare two devices head-to-head</div>
+      </a>
+      <a href="/hud-gallery.html" class="feature-card">
+        <span class="feature-icon">&#127760;</span>
+        <div class="feature-title">HUD Gallery</div>
+        <div class="feature-desc">Pro HUD layouts & instant copy codes</div>
+      </a>
+      <a href="/leaderboard.html" class="feature-card">
+        <span class="feature-icon">&#127942;</span>
+        <div class="feature-title">Leaderboard</div>
+        <div class="feature-desc">Global rankings & XP system</div>
+      </a>
+      <a href="/tournaments.html" class="feature-card">
+        <span class="feature-icon">&#127864;</span>
+        <div class="feature-title">Tournaments</div>
+        <div class="feature-desc">Join events and compete for prizes</div>
+      </a>
+      <a href="/blog.html" class="feature-card">
+        <span class="feature-icon">&#128218;</span>
+        <div class="feature-title">Blog Center</div>
+        <div class="feature-desc">Expert tips, guides & strategies</div>
+      </a>
+      <a href="/news.html" class="feature-card">
+        <span class="feature-icon">&#128240;</span>
+        <div class="feature-title">News Hub</div>
+        <div class="feature-desc">Latest Free Fire updates & patches</div>
+      </a>
+      <a href="/sensitivity.html#creator" class="feature-card" style="border-color:var(--border-gold)">
+        <span class="feature-icon">&#127775;</span>
+        <div class="feature-title" style="color:var(--accent-gold)">Creator Tools</div>
+        <div class="feature-desc">Sensitivity cards, thumbnails & QR codes</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<section class="section-sm" style="position:relative;z-index:2">
+  <div class="container">
+    <div class="trusted-bar">
+      <div class="trusted-item">
+        <div class="trusted-val" data-target="500000">0</div>
+        <div class="trusted-label">Players Helped</div>
+      </div>
+      <div class="trusted-item">
+        <div class="trusted-val" data-target="2100">0</div>
+        <div class="trusted-label">Devices Listed</div>
+      </div>
+      <div class="trusted-item">
+        <div class="trusted-val" data-target="45000">0</div>
+        <div class="trusted-label">Sensitivities Generated</div>
+      </div>
+      <div class="trusted-item">
+        <div class="trusted-val" data-target="8900">0</div>
+        <div class="trusted-label">Community Reviews</div>
+      </div>
+      <div class="trusted-item">
+        <div class="trusted-val" data-target="150">0</div>
+        <div class="trusted-label">Tournaments Held</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LATEST DEVICES + ACTIVITY -->
+<section class="section">
+  <div class="container">
+    <div class="latest-section">
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+          <h3 style="font-family:var(--font-display);font-size:1.3rem;font-weight:700">&#128293; Trending Devices</h3>
+          <a href="/device.html" class="btn btn-outline btn-sm">View All</a>
+        </div>
+        <div id="trending-devices">
+          <!-- skeleton -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+            <div class="skeleton" style="height:200px;border-radius:var(--radius-lg)"></div>
+            <div class="skeleton" style="height:200px;border-radius:var(--radius-lg)"></div>
+            <div class="skeleton" style="height:200px;border-radius:var(--radius-lg)"></div>
+            <div class="skeleton" style="height:200px;border-radius:var(--radius-lg)"></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+          <h3 style="font-family:var(--font-display);font-size:1.3rem;font-weight:700">&#128293; Live Feed</h3>
+          <span class="badge badge-green"><span class="notif-dot"></span>LIVE</span>
+        </div>
+        <div class="card" style="padding:1rem">
+          <div id="activity-feed">
+            <div class="activity-feed-item">
+              <div class="activity-icon" style="background:var(--accent-blue-dim)">&#9889;</div>
+              <div>
+                <div class="activity-text"><strong>Ahmed_FF</strong> generated sensitivity for Galaxy A55</div>
+                <div class="activity-time">just now</div>
+              </div>
+            </div>
+            <div class="activity-feed-item">
+              <div class="activity-icon" style="background:rgba(255,215,0,0.1)">&#11088;</div>
+              <div>
+                <div class="activity-text"><strong>SniperKing</strong> reviewed POCO X5 Pro</div>
+                <div class="activity-time">2 min ago</div>
+              </div>
+            </div>
+            <div class="activity-feed-item">
+              <div class="activity-icon" style="background:rgba(0,200,100,0.1)">&#127942;</div>
+              <div>
+                <div class="activity-text"><strong>ProGamer</strong> reached Level 12</div>
+                <div class="activity-time">5 min ago</div>
+              </div>
+            </div>
+            <div class="activity-feed-item">
+              <div class="activity-icon" style="background:rgba(123,47,255,0.1)">&#127760;</div>
+              <div>
+                <div class="activity-text"><strong>FlameShooter</strong> uploaded new HUD layout</div>
+                <div class="activity-time">12 min ago</div>
+              </div>
+            </div>
+            <div class="activity-feed-item">
+              <div class="activity-icon" style="background:rgba(255,68,68,0.1)">&#128293;</div>
+              <div>
+                <div class="activity-text"><strong>HeadshotPro</strong> joined tournament</div>
+                <div class="activity-time">18 min ago</div>
+              </div>
+            </div>
+            <div class="activity-feed-item" style="border:none">
+              <div class="activity-icon" style="background:var(--accent-blue-dim)">&#128241;</div>
+              <div>
+                <div class="activity-text"><strong>DeviceFan</strong> requested Infinix Note 40</div>
+                <div class="activity-time">25 min ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Featured Device -->
+        <div style="margin-top:1.25rem">
+          <div class="card card-gold" style="text-align:center;padding:1.5rem">
+            <div class="badge badge-gold" style="margin-bottom:0.75rem;display:inline-flex">&#11088; DEVICE OF THE DAY</div>
+            <div style="font-size:3rem;margin-bottom:0.5rem">&#128241;</div>
+            <div style="font-family:var(--font-display);font-size:1rem;font-weight:700;margin-bottom:0.25rem">Samsung Galaxy A55 5G</div>
+            <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem">Score: 78/100 &#128293;</div>
+            <a href="/device.html" class="btn btn-gold btn-sm" style="width:100%">View Settings</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="position:relative;z-index:2">
+  <div class="container">
+    <div class="cta-section">
+      <div class="badge badge-blue" style="margin-bottom:1.5rem;display:inline-flex">&#9889; FREE FOREVER</div>
+      <h2 class="section-title">Ready to Level Up Your <span class="highlight-gold">Game?</span></h2>
+      <p class="section-desc" style="margin-bottom:2.5rem">Join 500,000+ players using JUTTFHX Sensitivity Hub to improve their Free Fire performance.</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+        <a href="/register.html" class="btn btn-gold btn-lg">&#128293; Create Free Account</a>
+        <a href="/sensitivity.html" class="btn btn-outline btn-lg">&#9889; Try AI Generator</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:2rem">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:0.75rem">
+          <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;color:white">JX</div>
+          <div class="footer-brand-name">JUTTFHX <span>Hub</span></div>
+        </div>
+        <p class="footer-desc">The world's most advanced Free Fire sensitivity & device analytics platform.</p>
+        <div class="footer-social" style="margin-top:1rem">
+          <a href="#" class="social-btn" title="TikTok">&#127926;</a>
+          <a href="#" class="social-btn" title="WhatsApp">&#128172;</a>
+          <a href="#" class="social-btn" title="YouTube">&#127909;</a>
+          <a href="#" class="social-btn" title="Discord">&#127918;</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-heading">Platform</div>
+        <ul class="footer-links">
+          <li><a href="/sensitivity.html">AI Sensitivity</a></li>
+          <li><a href="/device.html">Device Database</a></li>
+          <li><a href="/hud-gallery.html">HUD Gallery</a></li>
+          <li><a href="/leaderboard.html">Leaderboard</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-heading">Community</div>
+        <ul class="footer-links">
+          <li><a href="/tournaments.html">Tournaments</a></li>
+          <li><a href="/blog.html">Blog</a></li>
+          <li><a href="/news.html">News</a></li>
+          <li><a href="/profile.html">My Profile</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-heading">Account</div>
+        <ul class="footer-links">
+          <li><a href="/register.html">Register</a></li>
+          <li><a href="/login.html">Login</a></li>
+          <li><a href="/settings.html">Settings</a></li>
+          <li><a href="/admin.html">Admin Panel</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; 2025 JUTTFHX Sensitivity Hub. Built for Free Fire players worldwide.</span>
+      <div style="display:flex;gap:1.5rem">
+        <a href="#" style="color:var(--text-muted);font-size:0.8rem;text-decoration:none">Privacy</a>
+        <a href="#" style="color:var(--text-muted);font-size:0.8rem;text-decoration:none">Terms</a>
+        <a href="#" style="color:var(--text-muted);font-size:0.8rem;text-decoration:none">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+<script>
+// Init particles
+window.addEventListener('load', () => initParticles('particles-canvas'));
+
+// Populate trending devices with sample data
+function renderTrendingDevices() {
+  const devices = [
+    { name: 'Galaxy A55 5G', brand: 'Samsung', emoji: '&#128241;', score: 78, rating: '4.8', badge: 'Flagship' },
+    { name: 'POCO X6 Pro', brand: 'Xiaomi', emoji: '&#128241;', score: 82, rating: '4.7', badge: 'Hot' },
+    { name: 'Realme GT 6', brand: 'Realme', emoji: '&#128241;', score: 75, rating: '4.6', badge: 'Popular' },
+    { name: 'OnePlus 12R', brand: 'OnePlus', emoji: '&#128241;', score: 85, rating: '4.9', badge: 'Pro Pick' }
+  ];
+  document.getElementById('trending-devices').innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">${devices.map(d => `
+    <a href="/device.html" class="device-card" style="text-decoration:none">
+      <div class="device-card-img">${d.emoji}</div>
+      <div class="device-card-body">
+        <div class="device-card-brand">${d.brand}</div>
+        <div class="device-card-name">${d.name}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span class="badge badge-blue">${d.badge}</span>
+          <span style="font-family:var(--font-display);font-size:0.85rem;color:var(--accent-gold)">&#11088; ${d.rating}</span>
+        </div>
+      </div>
+    </a>`).join('')}</div>`;
+}
+renderTrendingDevices();
+
+// PWA Install
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const banner = document.createElement('div');
+  banner.style.cssText = 'position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:rgba(8,15,30,0.97);border:1px solid var(--border-glass);border-radius:var(--radius-md);padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem;z-index:1000;backdrop-filter:blur(20px);box-shadow:0 8px 30px rgba(0,0,0,0.5)';
+  banner.innerHTML = `<span>&#128241;</span><span style="color:var(--text-primary);font-size:0.875rem">Install JUTTFHX App</span><button onclick="installApp()" style="background:var(--accent-blue);color:white;border:none;border-radius:6px;padding:0.4rem 1rem;cursor:pointer;font-family:var(--font-primary);font-weight:600">Install</button><button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem">&times;</button>`;
+  document.body.appendChild(banner);
+});
+window.installApp = () => { if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => deferredPrompt = null); } };
+
+// Service Worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/pwa/service-worker.js').then(r => console.log('[SW] Registered:', r.scope));
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Sensitivity Generator - JUTTFHX Hub</title>
+<meta name="description" content="AI-powered Free Fire sensitivity generator. Get perfect settings for your device, playstyle, and skill level.">
+<link rel="manifest" href="/pwa/manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/theme.css">
+<style>
+.sens-hero { padding: 120px 0 60px; background: var(--gradient-hero); position: relative; overflow: hidden; }
+.sens-hero::before { content:''; position:absolute; inset:0; background-image: linear-gradient(rgba(0,170,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,170,255,0.04) 1px, transparent 1px); background-size:50px 50px; mask-image: radial-gradient(ellipse at 50% 0%, black 40%, transparent 80%); }
+.generator-card { background: var(--gradient-card); border: 1px solid var(--border-glass); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-card); }
+.gen-header { background: linear-gradient(135deg, rgba(0,60,130,0.4), rgba(0,30,70,0.3)); border-bottom: 1px solid var(--border-glass); padding: 1.75rem 2rem; display:flex; align-items:center; gap:1rem; }
+.gen-header-icon { width:48px; height:48px; background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple)); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; box-shadow: 0 0 20px rgba(0,170,255,0.4); }
+.gen-body { padding: 2rem; }
+.result-card { background: rgba(0,170,255,0.04); border: 1px solid rgba(0,170,255,0.15); border-radius: var(--radius-lg); padding: 2rem; display: none; }
+.result-card.visible { display: block; animation: fadeIn 0.5s ease; }
+.sens-result-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.sens-result-item { background: rgba(5,10,20,0.8); border: 1px solid var(--border-glass); border-radius: var(--radius-md); padding: 1.25rem; text-align: center; transition: var(--transition); }
+.sens-result-item:hover { border-color: rgba(0,170,255,0.3); transform: translateY(-2px); }
+.sens-result-label { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+.sens-result-val { font-family: var(--font-display); font-size: 2rem; font-weight: 900; color: var(--accent-blue); text-shadow: 0 0 20px rgba(0,170,255,0.4); line-height: 1; }
+.tips-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.tips-list li { display:flex; align-items:flex-start; gap:0.6rem; font-size:0.875rem; color:var(--text-secondary); padding: 0.6rem; background: rgba(0,170,255,0.04); border-radius: 8px; }
+.tool-tab-content { padding: 1.5rem 0; }
+.calc-result-box { background: linear-gradient(135deg, rgba(0,50,110,0.3), rgba(0,25,60,0.2)); border: 1px solid rgba(0,170,255,0.2); border-radius: var(--radius-lg); padding: 1.5rem; text-align: center; }
+.calc-result-val { font-family: var(--font-display); font-size: 3rem; font-weight: 900; color: var(--accent-blue); text-shadow: 0 0 30px rgba(0,170,255,0.5); }
+.creator-card { background: var(--gradient-card); border: 1px solid var(--border-gold); border-radius: var(--radius-lg); padding: 1.5rem; }
+.share-btns { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.share-btn-tiktok { background: linear-gradient(135deg, #010101, #1a1a2e); border: 1px solid rgba(255,255,255,0.1); color: white; }
+.share-btn-wa { background: linear-gradient(135deg, #128C7E, #075E54); color: white; }
+.share-btn-copy { background: var(--bg-glass); border: 1px solid var(--border-glass); color: var(--text-primary); }
+@media(max-width:768px) { .sens-result-grid { grid-template-columns: repeat(2,1fr); } .gen-body { padding: 1.25rem; } }
+</style>
+</head>
+<body>
+<div id="loading-screen"><div class="loading-logo">AI SENS</div><div class="loading-bar"><div class="loading-bar-fill"></div></div><div class="loading-text">Initializing AI Engine...</div></div>
+<div class="aurora-bg"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <a href="/index.html" class="navbar-brand"><div class="navbar-logo">JX</div><span class="navbar-title">JUTTFHX <span>Hub</span></span></a>
+  <ul class="navbar-nav" id="nav-links">
+    <li><a href="/index.html">Home</a></li>
+    <li><a href="/device.html">Devices</a></li>
+    <li><a href="/sensitivity.html" class="active">Sensitivity</a></li>
+    <li><a href="/leaderboard.html">Leaderboard</a></li>
+    <li><a href="/hud-gallery.html">HUD</a></li>
+    <li><a href="/blog.html">Blog</a></li>
+    <li><a href="/tournaments.html">Events</a></li>
+  </ul>
+  <div class="navbar-actions" id="nav-actions">
+    <a href="/login.html" class="btn-nav-login">Login</a>
+    <a href="/register.html" class="btn-nav-cta">Join Free</a>
+  </div>
+  <button class="navbar-hamburger" onclick="document.getElementById('nav-links').classList.toggle('mobile-open')">&#9776;</button>
+</nav>
+
+<!-- HERO -->
+<section class="sens-hero">
+  <div class="container" style="position:relative;z-index:2">
+    <div class="section-header">
+      <div class="section-eyebrow">AI-Powered Engine</div>
+      <h1 class="section-title">&#9889; Sensitivity <span class="highlight">Generator</span></h1>
+      <p class="section-desc">Get AI-optimized sensitivity settings tailored to your exact device, playstyle, DPI, and skill level. Used by 500K+ players.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section class="section" style="margin-top:-3rem">
+  <div class="container">
+    <!-- Tabs -->
+    <div style="margin-bottom:2rem" class="tabs-container">
+      <div class="tabs" style="flex-wrap:wrap">
+        <button class="tab-btn active" data-tab="generator">&#9889; AI Generator</button>
+        <button class="tab-btn" data-tab="headshot">&#127919; Headshot Calc</button>
+        <button class="tab-btn" data-tab="drag">&#128200; Drag Shot</button>
+        <button class="tab-btn" data-tab="compare">&#9878;&#65039; Compare</button>
+        <button class="tab-btn" data-tab="creator" id="creator-tab">&#127775; Creator Tools</button>
+      </div>
+
+      <!-- AI GENERATOR -->
+      <div class="tab-content active" data-tab-content="generator">
+        <div class="tool-tab-content">
+          <div class="grid-2">
+            <div class="generator-card">
+              <div class="gen-header">
+                <div class="gen-header-icon">&#129302;</div>
+                <div>
+                  <div style="font-family:var(--font-display);font-size:1.1rem;font-weight:700">AI Sensitivity Engine</div>
+                  <div style="font-size:0.8rem;color:var(--text-muted)">Fill in details for personalized results</div>
+                </div>
+              </div>
+              <div class="gen-body">
+                <div class="form-group">
+                  <label class="form-label">&#128241; Your Device</label>
+                  <input type="text" class="form-input" id="gen-device" placeholder="e.g. Samsung Galaxy A55, POCO X5 Pro..." list="device-suggestions">
+                  <datalist id="device-suggestions">
+                    <option value="Samsung Galaxy A55 5G">
+                    <option value="Samsung Galaxy A35">
+                    <option value="POCO X5 Pro">
+                    <option value="POCO X6 Pro">
+                    <option value="Realme GT 6">
+                    <option value="Xiaomi Redmi Note 13 Pro">
+                    <option value="OnePlus 12R">
+                    <option value="Vivo V30">
+                    <option value="Infinix Note 40 Pro">
+                    <option value="Tecno Phantom X2">
+                  </datalist>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">&#127919; Playstyle</label>
+                  <select class="form-input form-select" id="gen-style">
+                    <option value="balanced">&#9878; Balanced (Recommended)</option>
+                    <option value="aggressive">&#9889; Aggressive Rusher</option>
+                    <option value="defensive">&#128737; Defensive</option>
+                    <option value="rusher">&#128293; Entry Fragger</option>
+                    <option value="sniper">&#127890; Sniper / Long Range</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">&#127941; Skill Level</label>
+                  <select class="form-input form-select" id="gen-skill">
+                    <option value="beginner">&#127807; Beginner</option>
+                    <option value="intermediate" selected>&#9889; Intermediate</option>
+                    <option value="advanced">&#128293; Advanced</option>
+                    <option value="pro">&#128081; Pro Player</option>
+                  </select>
+                </div>
+                <div class="grid-2" style="gap:1rem">
+                  <div class="form-group">
+                    <label class="form-label">Screen Size (inches)</label>
+                    <input type="number" class="form-input" id="gen-screen" placeholder="6.4" min="5" max="10" step="0.1" value="6.4">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">DPI Setting</label>
+                    <select class="form-input form-select" id="gen-dpi">
+                      <option value="400">400 DPI</option>
+                      <option value="600">600 DPI</option>
+                      <option value="800" selected>800 DPI (Default)</option>
+                      <option value="1000">1000 DPI</option>
+                      <option value="1200">1200 DPI</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Resolution</label>
+                  <select class="form-input form-select" id="gen-res">
+                    <option value="1080x2340" selected>FHD+ (1080x2340)</option>
+                    <option value="720x1600">HD+ (720x1600)</option>
+                    <option value="1080x2400">FHD+ (1080x2400)</option>
+                    <option value="1440x3088">QHD+ (1440x3088)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Mode Preference</label>
+                  <select class="form-input form-select" id="gen-mode">
+                    <option value="tpp">TPP (Third Person) &#9829;</option>
+                    <option value="fpp">FPP (First Person)</option>
+                  </select>
+                </div>
+                <button class="btn btn-primary" style="width:100%;font-size:1rem;padding:1rem" onclick="generateSensitivity()">
+                  &#9889; Generate AI Sensitivity
+                </button>
+              </div>
+            </div>
+
+            <!-- RESULTS -->
+            <div>
+              <div class="result-card" id="result-card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+                  <div>
+                    <div style="font-family:var(--font-display);font-size:1.2rem;font-weight:700">&#127891; Your Sensitivity</div>
+                    <div style="font-size:0.8rem;color:var(--text-muted)" id="result-device-label">Optimized for your device</div>
+                  </div>
+                  <div style="text-align:right">
+                    <div style="font-size:0.75rem;color:var(--text-muted)">AI Confidence</div>
+                    <div style="font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--accent-blue)" id="result-confidence">--</div>
+                  </div>
+                </div>
+                <div class="sens-result-grid" id="sens-result-grid">
+                  <!-- Populated by JS -->
+                </div>
+                <div style="margin-top:1.25rem">
+                  <div class="progress-bar"><div class="progress-fill" id="confidence-bar" style="width:0%" data-width="0%"></div></div>
+                </div>
+                <div style="margin-top:1.5rem">
+                  <div style="font-size:0.8rem;font-weight:700;color:var(--text-secondary);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:1px">&#129302; AI Tips</div>
+                  <ul class="tips-list" id="ai-tips"></ul>
+                </div>
+                <div style="margin-top:1.5rem" id="perf-prediction"></div>
+                <div class="share-btns" style="margin-top:1.5rem">
+                  <button class="btn btn-sm share-btn-copy" onclick="copySensitivity()">&#128203; Copy</button>
+                  <button class="btn btn-sm share-btn-tiktok" onclick="generateCard()">&#127775; Generate Card</button>
+                  <button class="btn btn-sm share-btn-wa" onclick="shareWhatsApp()">&#128172; WhatsApp</button>
+                  <button class="btn btn-sm btn-primary" onclick="exportPDF()">&#128196; PDF</button>
+                </div>
+              </div>
+              <!-- Placeholder -->
+              <div id="result-placeholder" style="height:100%;display:flex;align-items:center;justify-content:center;min-height:400px">
+                <div style="text-align:center">
+                  <div style="font-size:4rem;margin-bottom:1rem;opacity:0.3">&#129302;</div>
+                  <div style="color:var(--text-muted);font-size:0.9rem">Fill in your details and click<br>Generate to get your settings</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HEADSHOT CALC -->
+      <div class="tab-content" data-tab-content="headshot" id="headshot">
+        <div class="tool-tab-content">
+          <div class="grid-2">
+            <div class="card">
+              <h3 style="font-family:var(--font-display);margin-bottom:1.5rem">&#127919; Headshot Calculator</h3>
+              <div class="form-group">
+                <label class="form-label">Current General Sensitivity</label>
+                <input type="number" class="form-input" id="hs-general" placeholder="95" min="50" max="200">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Device Type</label>
+                <select class="form-input form-select" id="hs-device-type">
+                  <option value="phone">Smartphone</option>
+                  <option value="tablet">Tablet</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Target Type</label>
+                <select class="form-input form-select" id="hs-target">
+                  <option value="still">Still Target</option>
+                  <option value="moving">Moving Target</option>
+                  <option value="mixed">Mixed</option>
+                </select>
+              </div>
+              <button class="btn btn-primary" style="width:100%" onclick="calcHeadshot()">&#127919; Calculate</button>
+            </div>
+            <div>
+              <div class="calc-result-box" id="hs-result" style="display:none">
+                <div style="font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem">Recommended Headshot Sensitivity</div>
+                <div class="calc-result-val" id="hs-val">--</div>
+                <div style="margin-top:1rem;font-size:0.8rem;color:var(--text-secondary)">Range: <span id="hs-range" style="color:var(--accent-gold)">--</span></div>
+                <div style="margin-top:1rem" id="hs-tips"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DRAG CALC -->
+      <div class="tab-content" data-tab-content="drag">
+        <div class="tool-tab-content">
+          <div class="grid-2">
+            <div class="card">
+              <h3 style="font-family:var(--font-display);margin-bottom:1.5rem">&#128200; Drag Shot Calculator</h3>
+              <div class="form-group">
+                <label class="form-label">General Sensitivity</label>
+                <input type="number" class="form-input" id="drag-general" placeholder="95">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Screen Size (inches)</label>
+                <input type="number" class="form-input" id="drag-screen" placeholder="6.4" step="0.1">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Finger Style</label>
+                <select class="form-input form-select" id="drag-finger">
+                  <option value="thumb">Thumb Player</option>
+                  <option value="index">Index/Claw</option>
+                </select>
+              </div>
+              <button class="btn btn-gold" style="width:100%" onclick="calcDrag()">&#128200; Calculate Drag</button>
+            </div>
+            <div>
+              <div class="calc-result-box" id="drag-result" style="display:none">
+                <div style="font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem">Drag Shot Sensitivity</div>
+                <div class="calc-result-val" id="drag-val" style="color:var(--accent-gold)">--</div>
+                <div style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-secondary)" id="drag-technique"></div>
+                <div id="drag-tips" style="margin-top:1rem"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMPARE -->
+      <div class="tab-content" data-tab-content="compare">
+        <div class="tool-tab-content">
+          <div class="card">
+            <h3 style="font-family:var(--font-display);margin-bottom:1.5rem">&#9878;&#65039; Sensitivity Comparison</h3>
+            <div class="grid-2" style="gap:2rem">
+              <div>
+                <div style="font-size:0.85rem;color:var(--accent-blue);font-weight:700;margin-bottom:1rem">Setting A</div>
+                <div class="form-group"><label class="form-label">General</label><input type="number" class="form-input" id="cmp-a-gen" placeholder="95"></div>
+                <div class="form-group"><label class="form-label">Red Dot</label><input type="number" class="form-input" id="cmp-a-rd" placeholder="72"></div>
+                <div class="form-group"><label class="form-label">2x Scope</label><input type="number" class="form-input" id="cmp-a-x2" placeholder="68"></div>
+                <div class="form-group"><label class="form-label">4x Scope</label><input type="number" class="form-input" id="cmp-a-x4" placeholder="55"></div>
+                <div class="form-group"><label class="form-label">Sniper</label><input type="number" class="form-input" id="cmp-a-sn" placeholder="32"></div>
+              </div>
+              <div>
+                <div style="font-size:0.85rem;color:var(--accent-gold);font-weight:700;margin-bottom:1rem">Setting B</div>
+                <div class="form-group"><label class="form-label">General</label><input type="number" class="form-input" id="cmp-b-gen" placeholder="100"></div>
+                <div class="form-group"><label class="form-label">Red Dot</label><input type="number" class="form-input" id="cmp-b-rd" placeholder="75"></div>
+                <div class="form-group"><label class="form-label">2x Scope</label><input type="number" class="form-input" id="cmp-b-x2" placeholder="70"></div>
+                <div class="form-group"><label class="form-label">4x Scope</label><input type="number" class="form-input" id="cmp-b-x4" placeholder="58"></div>
+                <div class="form-group"><label class="form-label">Sniper</label><input type="number" class="form-input" id="cmp-b-sn" placeholder="35"></div>
+              </div>
+            </div>
+            <button class="btn btn-primary" style="margin-top:1rem" onclick="compareSens()">&#9878;&#65039; Compare Settings</button>
+            <div id="compare-result" style="margin-top:1.5rem"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CREATOR TOOLS -->
+      <div class="tab-content" data-tab-content="creator" id="creator">
+        <div class="tool-tab-content">
+          <div class="grid-3">
+            <div class="creator-card">
+              <div style="font-size:2rem;margin-bottom:0.75rem">&#127775;</div>
+              <h4 style="font-family:var(--font-display);margin-bottom:0.5rem">Sensitivity Card</h4>
+              <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem">Generate a shareable image card with your settings</p>
+              <button class="btn btn-gold btn-sm" onclick="openCardGenerator()">Create Card</button>
+            </div>
+            <div class="creator-card">
+              <div style="font-size:2rem;margin-bottom:0.75rem">&#127926;</div>
+              <h4 style="font-family:var(--font-display);margin-bottom:0.5rem">TikTok Post</h4>
+              <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem">9:16 format post for TikTok</p>
+              <button class="btn btn-outline btn-sm" onclick="generateTikTok()">Create Post</button>
+            </div>
+            <div class="creator-card">
+              <div style="font-size:2rem;margin-bottom:0.75rem">&#127909;</div>
+              <h4 style="font-family:var(--font-display);margin-bottom:0.5rem">YouTube Thumbnail</h4>
+              <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem">16:9 professional thumbnail</p>
+              <button class="btn btn-outline btn-sm" onclick="generateThumb()">Create Thumbnail</button>
+            </div>
+            <div class="creator-card">
+              <div style="font-size:2rem;margin-bottom:0.75rem">&#128396;</div>
+              <h4 style="font-family:var(--font-display);margin-bottom:0.5rem">QR Code</h4>
+              <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem">Share your settings via QR code</p>
+              <button class="btn btn-outline btn-sm" onclick="generateQR()">Generate QR</button>
+            </div>
+            <div class="creator-card">
+              <div style="font-size:2rem;margin-bottom:0.75rem">&#128196;</div>
+              <h4 style="font-family:var(--font-display);margin-bottom:0.5rem">Export PDF</h4>
+              <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem">Download your settings as PDF</p>
+              <button class="btn btn-outline btn-sm" onclick="exportPDF()">Export PDF</button>
+            </div>
+            <div class="creator-card">
+              <div style="font-size:2rem;margin-bottom:0.75rem">&#128247;</div>
+              <h4 style="font-family:var(--font-display);margin-bottom:0.5rem">Export PNG</h4>
+              <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem">Download as high-quality PNG</p>
+              <button class="btn btn-outline btn-sm" onclick="exportPNG()">Export PNG</button>
+            </div>
+          </div>
+          <!-- Sensitivity Card Preview -->
+          <div style="margin-top:2rem">
+            <canvas id="sens-card-canvas" width="800" height="450" style="max-width:100%;border-radius:var(--radius-lg);border:1px solid var(--border-glass);display:none"></canvas>
+            <div id="card-download-btn" style="display:none;margin-top:1rem">
+              <a id="card-download-link" class="btn btn-gold">&#11015;&#65039; Download Card</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; 2025 JUTTFHX Sensitivity Hub</span>
+      <div style="display:flex;gap:1.5rem">
+        <a href="/index.html" style="color:var(--text-muted);font-size:0.8rem;text-decoration:none">Home</a>
+        <a href="/device.html" style="color:var(--text-muted);font-size:0.8rem;text-decoration:none">Devices</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+<script type="module">
+import { generateSensitivity as aiGenerate, calculateHeadshotSens, calculateDragShot, compareSensitivities } from '/assets/js/sensitivity-ai.js';
+
+window.generateSensitivity = function() {
+  const device = document.getElementById('gen-device').value;
+  const playStyle = document.getElementById('gen-style').value;
+  const skill = document.getElementById('gen-skill').value;
+  const screenSize = parseFloat(document.getElementById('gen-screen').value) || 6.4;
+  const dpi = parseInt(document.getElementById('gen-dpi').value) || 800;
+  const resVal = document.getElementById('gen-res').value.split('x');
+  const mode = document.getElementById('gen-mode').value;
+  
+  const btn = document.querySelector('#generator-card button') || document.querySelector('[onclick="generateSensitivity()"]');
+  if(btn){ btn.textContent = '&#9889; Generating...'; btn.disabled = true; }
+  
+  setTimeout(() => {
+    const result = aiGenerate({
+      device, playStyle, skill, screenSize, dpi,
+      resolution: { width: parseInt(resVal[0]), height: parseInt(resVal[1]) },
+      mode
+    });
+    
+    window._lastSens = result;
+    
+    const labels = { general:'General', redDot:'Red Dot', x2Scope:'2x Scope', x4Scope:'4x Scope', sniper:'Sniper', freeLook:'Free Look', camera:'Camera', headshot:'Headshot' };
+    const grid = document.getElementById('sens-result-grid');
+    grid.innerHTML = Object.entries(result.sensitivities).map(([k, v]) => `
+      <div class="sens-result-item">
+        <div class="sens-result-label">${labels[k] || k}</div>
+        <div class="sens-result-val" style="animation:slideInUp 0.4s ease">${v}</div>
+      </div>`).join('');
+    
+    document.getElementById('result-confidence').textContent = result.confidence + '%';
+    document.getElementById('result-device-label').textContent = device ? `Optimized for ${device}` : 'AI Generated Settings';
+    
+    const confBar = document.getElementById('confidence-bar');
+    confBar.style.width = '0%';
+    setTimeout(() => { confBar.dataset.width = result.confidence + '%'; confBar.style.width = result.confidence + '%'; }, 100);
+    
+    const tipsList = document.getElementById('ai-tips');
+    tipsList.innerHTML = result.tips.map(t => `<li>${t}</li>`).join('');
+    
+    const pred = result.prediction;
+    document.getElementById('perf-prediction').innerHTML = `
+      <div style="font-size:0.8rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.75rem">&#128200; Performance Prediction</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem">
+        <div style="background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.1);border-radius:8px;padding:0.75rem;text-align:center">
+          <div style="font-size:0.65rem;color:var(--text-muted)">Headshot Rate</div>
+          <div style="font-family:var(--font-display);font-size:1.1rem;color:var(--accent-blue)">${pred.headshotRate}%</div>
+        </div>
+        <div style="background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.1);border-radius:8px;padding:0.75rem;text-align:center">
+          <div style="font-size:0.65rem;color:var(--text-muted)">Reaction</div>
+          <div style="font-family:var(--font-display);font-size:1.1rem;color:var(--accent-gold)">${pred.reactionTime}%</div>
+        </div>
+        <div style="background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.1);border-radius:8px;padding:0.75rem;text-align:center">
+          <div style="font-size:0.65rem;color:var(--text-muted)">Stability</div>
+          <div style="font-family:var(--font-display);font-size:1.1rem;color:#00c864">${pred.stability}%</div>
+        </div>
+      </div>`;
+    
+    document.getElementById('result-placeholder').style.display = 'none';
+    document.getElementById('result-card').classList.add('visible');
+    if(btn){ btn.innerHTML = '&#9889; Generate AI Sensitivity'; btn.disabled = false; }
+    showToast('Sensitivity generated successfully!', 'success');
+  }, 1200);
+};
+
+window.calcHeadshot = function() {
+  const result = calculateHeadshotSens({
+    generalSens: parseInt(document.getElementById('hs-general').value) || 95,
+    deviceType: document.getElementById('hs-device-type').value,
+    targetStyle: document.getElementById('hs-target').value
+  });
+  document.getElementById('hs-val').textContent = result.recommended;
+  document.getElementById('hs-range').textContent = result.range[0] + ' - ' + result.range[1];
+  document.getElementById('hs-tips').innerHTML = result.tips.map(t => `<div style="background:rgba(0,170,255,0.06);border-radius:6px;padding:0.4rem 0.7rem;margin-bottom:0.4rem;font-size:0.8rem;color:var(--text-secondary)">${t}</div>`).join('');
+  document.getElementById('hs-result').style.display = 'block';
+};
+
+window.calcDrag = function() {
+  const result = calculateDragShot({
+    generalSens: parseInt(document.getElementById('drag-general').value) || 95,
+    screenSize: parseFloat(document.getElementById('drag-screen').value) || 6.4,
+    finger: document.getElementById('drag-finger').value
+  });
+  document.getElementById('drag-val').textContent = result.dragSpeed;
+  document.getElementById('drag-technique').textContent = result.technique;
+  document.getElementById('drag-tips').innerHTML = result.practice.map(t => `<div style="background:rgba(255,215,0,0.06);border-radius:6px;padding:0.4rem 0.7rem;margin-bottom:0.4rem;font-size:0.8rem;color:var(--text-secondary)">${t}</div>`).join('');
+  document.getElementById('drag-result').style.display = 'block';
+};
+
+window.compareSens = function() {
+  const a = { general: +document.getElementById('cmp-a-gen').value||95, redDot: +document.getElementById('cmp-a-rd').value||72, x2Scope: +document.getElementById('cmp-a-x2').value||68, x4Scope: +document.getElementById('cmp-a-x4').value||55, sniper: +document.getElementById('cmp-a-sn').value||32, freeLook: 105 };
+  const b = { general: +document.getElementById('cmp-b-gen').value||100, redDot: +document.getElementById('cmp-b-rd').value||75, x2Scope: +document.getElementById('cmp-b-x2').value||70, x4Scope: +document.getElementById('cmp-b-x4').value||58, sniper: +document.getElementById('cmp-b-sn').value||35, freeLook: 110 };
+  const comp = compareSensitivities(a, b);
+  const labels = { general:'General', redDot:'Red Dot', x2Scope:'2x Scope', x4Scope:'4x Scope', sniper:'Sniper', freeLook:'Free Look' };
+  document.getElementById('compare-result').innerHTML = `
+    <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;font-size:0.875rem">
+      <thead><tr>
+        <th style="text-align:left;padding:0.6rem;color:var(--text-muted);font-weight:600">Setting</th>
+        <th style="text-align:center;padding:0.6rem;color:var(--accent-blue)">A</th>
+        <th style="text-align:center;padding:0.6rem;color:var(--accent-gold)">B</th>
+        <th style="text-align:center;padding:0.6rem;color:var(--text-muted)">Diff</th>
+      </tr></thead>
+      <tbody>${Object.entries(comp).map(([k,v]) => `
+        <tr style="border-top:1px solid rgba(255,255,255,0.04)">
+          <td style="padding:0.6rem;color:var(--text-secondary)">${labels[k]||k}</td>
+          <td style="text-align:center;padding:0.6rem;font-weight:700;color:var(--accent-blue)">${v.val1}</td>
+          <td style="text-align:center;padding:0.6rem;font-weight:700;color:var(--accent-gold)">${v.val2}</td>
+          <td style="text-align:center;padding:0.6rem;color:${v.diff>0?'#00c864':v.diff<0?'#ff4444':'var(--text-muted)'}">${v.diff>0?'+':''}${v.diff}%</td>
+        </tr>`).join('')}
+      </tbody>
+    </table></div>`;
+};
+
+window.copySensitivity = function() {
+  if (!window._lastSens) { showToast('Generate sensitivity first!', 'warning'); return; }
+  const s = window._lastSens.sensitivities;
+  const text = `JUTTFHX Sensitivity\nGeneral: ${s.general}\nRed Dot: ${s.redDot}\n2x Scope: ${s.x2Scope}\n4x Scope: ${s.x4Scope}\nSniper: ${s.sniper}\nFree Look: ${s.freeLook}\nCamera: ${s.camera}\nHeadshot: ${s.headshot}`;
+  copyToClipboard(text, 'Sensitivity copied!');
+};
+
+window.shareWhatsApp = function() {
+  if (!window._lastSens) { showToast('Generate sensitivity first!', 'warning'); return; }
+  const s = window._lastSens.sensitivities;
+  const text = encodeURIComponent(`*JUTTFHX Sensitivity Hub*\nGeneral: ${s.general} | Red Dot: ${s.redDot} | 2x: ${s.x2Scope} | 4x: ${s.x4Scope} | Sniper: ${s.sniper}\nGenerate yours: https://juttfhx.com/sensitivity.html`);
+  window.open('https://wa.me/?text=' + text, '_blank');
+};
+
+window.generateCard = function() {
+  if (!window._lastSens) { showToast('Generate sensitivity first!', 'warning'); return; }
+  const canvas = document.getElementById('sens-card-canvas');
+  const ctx = canvas.getContext('2d');
+  const s = window._lastSens.sensitivities;
+  
+  // Background
+  const grad = ctx.createLinearGradient(0, 0, 800, 450);
+  grad.addColorStop(0, '#020408'); grad.addColorStop(1, '#050d1a');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, 800, 450);
+  
+  // Grid
+  ctx.strokeStyle = 'rgba(0,170,255,0.05)'; ctx.lineWidth = 1;
+  for(let x=0;x<800;x+=50){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,450);ctx.stroke();}
+  for(let y=0;y<450;y+=50){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(800,y);ctx.stroke();}
+  
+  // Header
+  ctx.fillStyle = 'rgba(0,170,255,0.1)'; ctx.roundRect(20,20,760,60,10); ctx.fill();
+  ctx.strokeStyle = 'rgba(0,170,255,0.3)'; ctx.lineWidth = 1; ctx.stroke();
+  ctx.fillStyle = '#00aaff'; ctx.font = 'bold 22px Orbitron, sans-serif'; ctx.fillText('JUTTFHX SENSITIVITY HUB', 40, 58);
+  ctx.fillStyle = '#ffd700'; ctx.font = 'bold 14px Rajdhani, sans-serif'; ctx.fillText('AI GENERATED \u2605 FREE FIRE', 560, 58);
+  
+  // Values
+  const items = [['General', s.general, '#00aaff'],['Red Dot', s.redDot,'#00d4ff'],['2x Scope', s.x2Scope,'#00ffcc'],['4x Scope', s.x4Scope,'#ffcc00'],['Sniper', s.sniper,'#ffd700'],['Free Look', s.freeLook,'#9955ff'],['Camera', s.camera,'#00aaff'],['Headshot', s.headshot,'#ff6644']];
+  items.forEach((item, i) => {
+    const col = i % 4; const row = Math.floor(i / 4);
+    const x = 30 + col * 190; const y = 110 + row * 130;
+    ctx.fillStyle = 'rgba(5,10,20,0.9)'; ctx.roundRect(x,y,175,110,8); ctx.fill();
+    ctx.strokeStyle = item[2]+'44'; ctx.lineWidth = 1; ctx.strokeRect(x,y,175,110);
+    ctx.fillStyle = item[2]+'99'; ctx.font = '11px Rajdhani, sans-serif'; ctx.fillText(item[0].toUpperCase(), x+12, y+25);
+    ctx.fillStyle = item[2]; ctx.font = 'bold 42px Orbitron, sans-serif'; ctx.fillText(item[1], x+12, y+78);
+  });
+  
+  // Footer
+  ctx.fillStyle = '#ffffff22'; ctx.font = '12px Rajdhani, sans-serif'; ctx.fillText('juttfhx.com/sensitivity | Get your free settings', 30, 430);
+  ctx.fillStyle = '#ffd700'; ctx.fillText('\u2606 JUTTFHX Hub', 640, 430);
+  
+  canvas.style.display = 'block';
+  const link = document.getElementById('card-download-link');
+  link.href = canvas.toDataURL('image/png');
+  link.download = 'juttfhx-sensitivity.png';
+  document.getElementById('card-download-btn').style.display = 'block';
+  document.getElementById('creator-tab').click();
+  showToast('Sensitivity card created!', 'success');
+};
+
+window.exportPDF = function() { showToast('PDF export requires server-side rendering', 'info'); };
+window.exportPNG = function() { generateCard(); };
+window.generateTikTok = function() { generateCard(); showToast('TikTok format card generated!', 'success'); };
+window.generateThumb = function() { showToast('Thumbnail generator - coming soon!', 'info'); };
+window.generateQR = function() { showToast('QR code generator - coming soon!', 'info'); };
+window.openCardGenerator = function() { generateCard(); };
+
+// Tab switching
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelector(`[data-tab-content="${btn.dataset.tab}"]`)?.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

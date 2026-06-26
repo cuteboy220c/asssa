@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings - JUTTFHX Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/theme.css">
+<style>
+.settings-layout{display:grid;grid-template-columns:260px 1fr;gap:2rem;align-items:start;}
+.settings-nav{background:var(--gradient-card);border:1px solid var(--border-glass);border-radius:var(--radius-lg);overflow:hidden;position:sticky;top:90px;}
+.settings-nav-item{display:flex;align-items:center;gap:0.75rem;padding:0.9rem 1.25rem;cursor:pointer;transition:var(--transition);border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.875rem;font-weight:600;color:var(--text-secondary);}
+.settings-nav-item:hover,.settings-nav-item.active{background:rgba(0,170,255,0.06);color:var(--accent-blue);}
+.settings-nav-item:last-child{border-bottom:none;}
+.settings-icon{font-size:1.1rem;width:28px;text-align:center;}
+.settings-panel{display:none;}
+.settings-panel.active{display:block;}
+.settings-card{background:var(--gradient-card);border:1px solid var(--border-glass);border-radius:var(--radius-lg);padding:1.75rem;margin-bottom:1.5rem;}
+.settings-card-title{font-family:var(--font-display);font-size:1rem;font-weight:700;margin-bottom:0.3rem;}
+.settings-card-desc{font-size:0.8rem;color:var(--text-muted);margin-bottom:1.5rem;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.toggle-row:last-child{border-bottom:none;}
+.toggle-label{font-size:0.875rem;color:var(--text-secondary);}
+.toggle-switch{width:48px;height:26px;background:rgba(255,255,255,0.1);border-radius:13px;position:relative;cursor:pointer;transition:var(--transition);flex-shrink:0;}
+.toggle-switch.on{background:var(--accent-blue);}
+.toggle-knob{width:20px;height:20px;border-radius:50%;background:white;position:absolute;top:3px;left:3px;transition:var(--transition);box-shadow:0 2px 6px rgba(0,0,0,0.3);}
+.toggle-switch.on .toggle-knob{left:25px;}
+.danger-btn{background:rgba(255,68,68,0.1);border:1px solid rgba(255,68,68,0.3);color:#ff4444;}
+.danger-btn:hover{background:rgba(255,68,68,0.2);}
+.avatar-upload{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));border:3px dashed rgba(0,170,255,0.4);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.8rem;font-weight:700;transition:var(--transition);position:relative;overflow:hidden;}
+.avatar-upload:hover{border-color:var(--accent-blue);transform:scale(1.05);}
+@media(max-width:768px){.settings-layout{grid-template-columns:1fr;}.settings-nav{position:static;}}
+</style>
+</head>
+<body>
+<div id="loading-screen"><div class="loading-logo">SETTINGS</div><div class="loading-bar"><div class="loading-bar-fill"></div></div><div class="loading-text">Loading settings...</div></div>
+<div class="aurora-bg"></div>
+
+<nav class="navbar" id="navbar">
+  <a href="/index.html" class="navbar-brand"><div class="navbar-logo">JX</div><span class="navbar-title">JUTTFHX <span>Hub</span></span></a>
+  <ul class="navbar-nav"><li><a href="/index.html">Home</a></li><li><a href="/profile.html">Profile</a></li></ul>
+  <div class="navbar-actions"><a href="/profile.html" class="btn-nav-login">&#8592; Profile</a></div>
+</nav>
+
+<section class="section" style="padding-top:100px">
+  <div class="container">
+    <div style="margin-bottom:2rem">
+      <h1 style="font-family:var(--font-display);font-size:1.8rem;font-weight:700">&#9881; Account Settings</h1>
+      <p style="color:var(--text-muted);font-size:0.875rem">Manage your profile, preferences, and account security.</p>
+    </div>
+    <div class="settings-layout">
+      <!-- Nav -->
+      <div class="settings-nav">
+        <div class="settings-nav-item active" onclick="showPanel('profile',this)"><span class="settings-icon">&#128100;</span>Profile</div>
+        <div class="settings-nav-item" onclick="showPanel('account',this)"><span class="settings-icon">&#128274;</span>Account</div>
+        <div class="settings-nav-item" onclick="showPanel('notifications',this)"><span class="settings-icon">&#128276;</span>Notifications</div>
+        <div class="settings-nav-item" onclick="showPanel('sensitivity',this)"><span class="settings-icon">&#9889;</span>Sensitivity Prefs</div>
+        <div class="settings-nav-item" onclick="showPanel('privacy',this)"><span class="settings-icon">&#128065;</span>Privacy</div>
+        <div class="settings-nav-item" onclick="showPanel('appearance',this)"><span class="settings-icon">&#127775;</span>Appearance</div>
+        <div class="settings-nav-item" onclick="showPanel('danger',this)"><span class="settings-icon">&#9888;&#65039;</span>Danger Zone</div>
+      </div>
+
+      <!-- Panels -->
+      <div>
+        <div class="settings-panel active" id="panel-profile">
+          <div class="settings-card">
+            <div class="settings-card-title">Profile Information</div>
+            <div class="settings-card-desc">Update your public profile details.</div>
+            <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem">
+              <div class="avatar-upload" id="avatar-display" onclick="triggerAvatarUpload()">JX
+                <div style="position:absolute;inset:0;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;font-size:1rem" class="avatar-overlay">&#128247;</div>
+              </div>
+              <div>
+                <div style="font-size:0.875rem;color:var(--text-secondary);margin-bottom:0.25rem">Profile Picture</div>
+                <div style="font-size:0.78rem;color:var(--text-muted)">Click to change. Max 2MB.</div>
+              </div>
+              <input type="file" id="avatar-input" accept="image/*" style="display:none" onchange="previewAvatar(this)">
+            </div>
+            <div class="grid-2" style="gap:1rem">
+              <div class="form-group">
+                <label class="form-label">Display Name</label>
+                <input type="text" class="form-input" id="set-name" placeholder="Your Name">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-input" id="set-username" placeholder="@username">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Bio</label>
+              <textarea class="form-input" id="set-bio" rows="3" placeholder="Tell the community about yourself..." style="resize:vertical"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Favorite Device</label>
+              <input type="text" class="form-input" id="set-device" placeholder="e.g. Samsung Galaxy A55 5G">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Playstyle</label>
+              <select class="form-input form-select" id="set-style">
+                <option>Aggressive Rusher</option>
+                <option>Defensive</option>
+                <option>Balanced</option>
+                <option>Sniper</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+          </div>
+        </div>
+
+        <div class="settings-panel" id="panel-account">
+          <div class="settings-card">
+            <div class="settings-card-title">Change Email</div>
+            <div class="settings-card-desc">Update your login email address.</div>
+            <div class="form-group"><label class="form-label">New Email</label><input type="email" class="form-input" placeholder="new@email.com"></div>
+            <div class="form-group"><label class="form-label">Current Password</label><input type="password" class="form-input" placeholder="Verify identity"></div>
+            <button class="btn btn-primary">Update Email</button>
+          </div>
+          <div class="settings-card">
+            <div class="settings-card-title">Change Password</div>
+            <div class="settings-card-desc">Choose a strong, unique password.</div>
+            <div class="form-group"><label class="form-label">Current Password</label><input type="password" class="form-input" placeholder="Current password"></div>
+            <div class="form-group"><label class="form-label">New Password</label><input type="password" class="form-input" id="new-pw" placeholder="New password"></div>
+            <div class="form-group"><label class="form-label">Confirm New Password</label><input type="password" class="form-input" placeholder="Confirm"></div>
+            <button class="btn btn-primary" onclick="changePassword()">Change Password</button>
+          </div>
+        </div>
+
+        <div class="settings-panel" id="panel-notifications">
+          <div class="settings-card">
+            <div class="settings-card-title">Notification Preferences</div>
+            <div class="settings-card-desc">Control what notifications you receive.</div>
+            <div id="notif-toggles">
+              <div class="toggle-row"><span class="toggle-label">New Device Added</span><div class="toggle-switch on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
+              <div class="toggle-row"><span class="toggle-label">Tournament Announcements</span><div class="toggle-switch on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
+              <div class="toggle-row"><span class="toggle-label">Sensitivity Updates</span><div class="toggle-switch on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
+              <div class="toggle-row"><span class="toggle-label">Review Replies</span><div class="toggle-switch" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
+              <div class="toggle-row"><span class="toggle-label">Weekly Digest</span><div class="toggle-switch on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
+              <div class="toggle-row"><span class="toggle-label">Platform News</span><div class="toggle-switch on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
+            </div>
+            <button class="btn btn-primary" style="margin-top:1rem" onclick="saveNotifPrefs()">Save Preferences</button>
+          </div>
+        </div>
+
+        <div class="settings-panel" id="panel-sensitivity">
+          <div class="settings-card">
+            <div class="settings-card-title">Default Sensitivity Preferences</div>
+            <div class="settings-card-desc">These will be pre-filled in the AI generator.</div>
+            <div class="form-group"><label class="form-label">Default Device</label><input type="text" class="form-input" id="pref-device" placeholder="Your main device"></div>
+            <div class="form-group">
+              <label class="form-label">Preferred Playstyle</label>
+              <select class="form-input form-select" id="pref-style">
+                <option>Balanced</option><option>Aggressive</option><option>Defensive</option><option>Sniper</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Skill Level</label>
+              <select class="form-input form-select" id="pref-skill">
+                <option>Beginner</option><option>Intermediate</option><option>Advanced</option><option>Pro</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" onclick="saveSensPrefs()">Save Preferences</button>
+          </div>
+        </div>
+
+        <div class="settings-panel" id="panel-privacy">
+          <div class="settings-card">
+            <div class="settings-card-title">Privacy Settings</div>
+            <div class="settings-card-desc">Control your visibility on the platform.</div>
+            <div class="toggle-row"><span class="toggle-label">Public Profile</span><div class="toggle-switch on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
+            <div class="toggle-row"><span class="toggle-label">Show on Leaderboard</span><div class="toggle-switch on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
+            <div class="toggle-row"><span class="toggle-label">Share Activity Feed</span><div class="toggle-switch" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
+            <div class="toggle-row"><span class="toggle-label">Allow Device Tracking</span><div class="toggle-switch on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
+            <button class="btn btn-primary" style="margin-top:1rem" onclick="showToast('Privacy settings saved!','success')">Save Settings</button>
+          </div>
+        </div>
+
+        <div class="settings-panel" id="panel-appearance">
+          <div class="settings-card">
+            <div class="settings-card-title">Appearance</div>
+            <div class="settings-card-desc">Customize how the platform looks.</div>
+            <div class="form-group">
+              <label class="form-label">Theme</label>
+              <div style="display:flex;gap:1rem;flex-wrap:wrap">
+                <div style="padding:0.75rem 1.5rem;border:2px solid var(--accent-blue);border-radius:var(--radius-sm);cursor:pointer;font-size:0.85rem;font-weight:700">Dark (Default)</div>
+                <div style="padding:0.75rem 1.5rem;border:1px solid var(--border-glass);border-radius:var(--radius-sm);cursor:pointer;font-size:0.85rem;color:var(--text-muted)" onclick="showToast('Light theme coming soon!','info')">Light (Soon)</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Accent Color</label>
+              <div style="display:flex;gap:0.75rem">
+                <div style="width:36px;height:36px;border-radius:50%;background:#00aaff;border:2px solid white;cursor:pointer" onclick="setAccent('#00aaff')"></div>
+                <div style="width:36px;height:36px;border-radius:50%;background:#a855f7;cursor:pointer" onclick="setAccent('#a855f7')"></div>
+                <div style="width:36px;height:36px;border-radius:50%;background:#ffd700;cursor:pointer" onclick="setAccent('#ffd700')"></div>
+                <div style="width:36px;height:36px;border-radius:50%;background:#00c864;cursor:pointer" onclick="setAccent('#00c864')"></div>
+                <div style="width:36px;height:36px;border-radius:50%;background:#ff6644;cursor:pointer" onclick="setAccent('#ff6644')"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-panel" id="panel-danger">
+          <div class="settings-card" style="border-color:rgba(255,68,68,0.2)">
+            <div class="settings-card-title" style="color:#ff4444">Danger Zone</div>
+            <div class="settings-card-desc">These actions are irreversible. Proceed with caution.</div>
+            <div style="display:flex;flex-direction:column;gap:1rem">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem;background:rgba(255,68,68,0.04);border:1px solid rgba(255,68,68,0.1);border-radius:var(--radius-sm)">
+                <div><div style="font-weight:700;font-size:0.9rem">Export My Data</div><div style="font-size:0.8rem;color:var(--text-muted)">Download all your data in JSON format</div></div>
+                <button class="btn btn-outline btn-sm" onclick="exportData()">Export</button>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem;background:rgba(255,68,68,0.04);border:1px solid rgba(255,68,68,0.1);border-radius:var(--radius-sm)">
+                <div><div style="font-weight:700;font-size:0.9rem">Deactivate Account</div><div style="font-size:0.8rem;color:var(--text-muted)">Temporarily deactivate your account</div></div>
+                <button class="btn btn-sm danger-btn" onclick="deactivateAccount()">Deactivate</button>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem;background:rgba(255,68,68,0.08);border:1px solid rgba(255,68,68,0.25);border-radius:var(--radius-sm)">
+                <div><div style="font-weight:700;font-size:0.9rem;color:#ff4444">Delete Account</div><div style="font-size:0.8rem;color:var(--text-muted)">Permanently delete all your data</div></div>
+                <button class="btn btn-sm" style="background:#ff4444;color:white" onclick="deleteAccount()">Delete Account</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer"><div class="container"><div class="footer-bottom"><span class="footer-copy">&copy; 2025 JUTTFHX Sensitivity Hub</span></div></div></footer>
+
+<script src="/assets/js/main.js"></script>
+<script type="module">
+import { onAuthChange, logout } from '/firebase/auth.js';
+
+onAuthChange(user => {
+  if(!user) window.location.href='/login.html?redirect=/settings.html';
+  else {
+    const name = user.displayName||'';
+    document.getElementById('set-name').value = name;
+    document.getElementById('avatar-display').textContent = name.substring(0,2).toUpperCase()||'JX';
+    const prefs = JSON.parse(localStorage.getItem('jx_prefs')||'{}');
+    if(prefs.device) document.getElementById('pref-device').value=prefs.device;
+    if(prefs.bio) document.getElementById('set-bio').value=prefs.bio;
+  }
+});
+
+window.showPanel = function(id, btn) {
+  document.querySelectorAll('.settings-nav-item').forEach(i=>i.classList.remove('active'));
+  document.querySelectorAll('.settings-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
+};
+
+window.saveProfile = function() {
+  const prefs = {
+    name: document.getElementById('set-name').value,
+    bio: document.getElementById('set-bio').value,
+    device: document.getElementById('set-device').value,
+    style: document.getElementById('set-style').value
+  };
+  localStorage.setItem('jx_prefs', JSON.stringify(prefs));
+  showToast('Profile saved!', 'success');
+};
+
+window.saveSensPrefs = function() {
+  const prefs = JSON.parse(localStorage.getItem('jx_prefs')||'{}');
+  prefs.device = document.getElementById('pref-device').value;
+  prefs.style = document.getElementById('pref-style').value;
+  prefs.skill = document.getElementById('pref-skill').value;
+  localStorage.setItem('jx_prefs', JSON.stringify(prefs));
+  showToast('Sensitivity preferences saved!', 'success');
+};
+
+window.saveNotifPrefs = function() { showToast('Notification preferences saved!', 'success'); };
+window.triggerAvatarUpload = function() { document.getElementById('avatar-input').click(); };
+window.previewAvatar = function(input) {
+  if(input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const el = document.getElementById('avatar-display');
+      el.style.background = `url(${e.target.result}) center/cover`;
+      el.textContent = '';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+};
+window.setAccent = function(color) {
+  document.documentElement.style.setProperty('--accent-blue', color);
+  localStorage.setItem('jx_accent', color);
+  showToast('Accent color updated!', 'success');
+};
+window.changePassword = function() { showToast('Password updated!', 'success'); };
+window.exportData = function() {
+  const data = { profile: JSON.parse(localStorage.getItem('jx_prefs')||'{}'), xp: localStorage.getItem('jx_xp')||0, exported: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='juttfhx-data.json'; a.click();
+};
+window.deactivateAccount = function() { showToast('Account deactivation requires email confirmation', 'warning'); };
+window.deleteAccount = function() { if(confirm('Are you absolutely sure? This action cannot be undone.')) showToast('Account deletion requires admin verification', 'error'); };
+
+const savedAccent = localStorage.getItem('jx_accent');
+if(savedAccent) document.documentElement.style.setProperty('--accent-blue', savedAccent);
+</script>
+</body>
+</html>

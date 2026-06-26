@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog - JUTTFHX Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/theme.css">
+<style>
+.blog-hero{padding:120px 0 60px;background:var(--gradient-hero);}
+.blog-grid{display:grid;grid-template-columns:2fr 1fr;gap:2rem;align-items:start;}
+.blog-card{background:var(--gradient-card);border:1px solid var(--border-glass);border-radius:var(--radius-lg);overflow:hidden;transition:var(--transition);margin-bottom:1.5rem;cursor:pointer;display:flex;gap:0;}
+.blog-card:hover{transform:translateY(-2px);border-color:rgba(0,170,255,0.25);box-shadow:var(--shadow-hover);}
+.blog-card-img{width:200px;min-height:150px;flex-shrink:0;background:linear-gradient(135deg,#050d1a,#020408);display:flex;align-items:center;justify-content:center;font-size:3.5rem;}
+.blog-card-body{padding:1.25rem;flex:1;}
+.blog-card-cat{font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent-blue);font-weight:700;margin-bottom:0.4rem;}
+.blog-card-title{font-family:var(--font-display);font-size:1rem;font-weight:700;margin-bottom:0.5rem;line-height:1.4;}
+.blog-card-excerpt{font-size:0.82rem;color:var(--text-secondary);line-height:1.6;margin-bottom:0.75rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.blog-card-meta{display:flex;align-items:center;gap:1rem;font-size:0.75rem;color:var(--text-muted);}
+.blog-sidebar{position:sticky;top:90px;}
+.sidebar-card{background:var(--gradient-card);border:1px solid var(--border-glass);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.5rem;}
+.sidebar-title{font-family:var(--font-display);font-size:0.9rem;font-weight:700;margin-bottom:1rem;}
+.trending-item{display:flex;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;align-items:flex-start;}
+.trending-num{font-family:var(--font-display);font-size:1.2rem;font-weight:900;color:rgba(255,255,255,0.15);min-width:28px;}
+.trending-title{font-size:0.82rem;font-weight:600;line-height:1.4;}
+.tag-cloud{display:flex;flex-wrap:wrap;gap:0.5rem;}
+@media(max-width:900px){.blog-grid{grid-template-columns:1fr;}.blog-card{flex-direction:column;}.blog-card-img{width:100%;min-height:120px;}}
+</style>
+</head>
+<body>
+<div id="loading-screen"><div class="loading-logo">BLOG</div><div class="loading-bar"><div class="loading-bar-fill"></div></div><div class="loading-text">Loading Blog...</div></div>
+<div class="aurora-bg"></div>
+
+<nav class="navbar" id="navbar">
+  <a href="/index.html" class="navbar-brand"><div class="navbar-logo">JX</div><span class="navbar-title">JUTTFHX <span>Hub</span></span></a>
+  <ul class="navbar-nav" id="nav-links">
+    <li><a href="/index.html">Home</a></li><li><a href="/device.html">Devices</a></li>
+    <li><a href="/sensitivity.html">Sensitivity</a></li><li><a href="/leaderboard.html">Leaderboard</a></li>
+    <li><a href="/hud-gallery.html">HUD</a></li><li><a href="/blog.html" class="active">Blog</a></li>
+  </ul>
+  <div class="navbar-actions"><a href="/login.html" class="btn-nav-login">Login</a><a href="/register.html" class="btn-nav-cta">Join Free</a></div>
+  <button class="navbar-hamburger" onclick="document.getElementById('nav-links').classList.toggle('mobile-open')">&#9776;</button>
+</nav>
+
+<section class="blog-hero">
+  <div class="container" style="position:relative;z-index:2;text-align:center">
+    <div class="section-eyebrow">Knowledge Base</div>
+    <h1 class="section-title">Blog <span class="highlight">Center</span></h1>
+    <p class="section-desc">Expert guides, sensitivity tips, device reviews, and Free Fire strategy articles.</p>
+    <div style="max-width:480px;margin:1.5rem auto 0;position:relative">
+      <input type="text" class="form-input" style="padding:0.9rem 1.25rem 0.9rem 3rem" placeholder="Search articles..." oninput="searchBlog(this.value)">
+      <span style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--text-muted)">&#128269;</span>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="margin-top:-2rem">
+  <div class="container">
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:2rem" id="blog-cats">
+      <button class="filter-chip active" onclick="filterBlog('all',this)">All Posts</button>
+      <button class="filter-chip" onclick="filterBlog('guide',this)">Guides</button>
+      <button class="filter-chip" onclick="filterBlog('tips',this)">Tips &amp; Tricks</button>
+      <button class="filter-chip" onclick="filterBlog('review',this)">Reviews</button>
+      <button class="filter-chip" onclick="filterBlog('news',this)">News</button>
+      <button class="filter-chip" onclick="filterBlog('sensitivity',this)">Sensitivity</button>
+    </div>
+    <div class="blog-grid">
+      <div id="blog-list"></div>
+      <aside class="blog-sidebar">
+        <div class="sidebar-card">
+          <div class="sidebar-title">Trending Posts</div>
+          <div id="trending-list"></div>
+        </div>
+        <div class="sidebar-card">
+          <div class="sidebar-title">Topics</div>
+          <div class="tag-cloud" id="tag-cloud">
+            <span class="badge badge-blue" style="cursor:pointer" onclick="filterBlog('sensitivity',null)">Sensitivity</span>
+            <span class="badge badge-blue" style="cursor:pointer">Headshot</span>
+            <span class="badge badge-blue" style="cursor:pointer">Drag Shot</span>
+            <span class="badge badge-blue" style="cursor:pointer">Device Review</span>
+            <span class="badge badge-blue" style="cursor:pointer">Ranking</span>
+            <span class="badge badge-blue" style="cursor:pointer">HUD</span>
+            <span class="badge badge-blue" style="cursor:pointer">Pro Tips</span>
+            <span class="badge badge-gold" style="cursor:pointer">Tutorial</span>
+          </div>
+        </div>
+        <div class="sidebar-card">
+          <div class="sidebar-title">Newsletter</div>
+          <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem">Get the latest tips delivered to your inbox.</p>
+          <input type="email" class="form-input" placeholder="your@email.com" style="margin-bottom:0.75rem">
+          <button class="btn btn-primary" style="width:100%">Subscribe</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- Blog Post Modal -->
+<div class="modal-overlay" id="blog-modal">
+  <div class="modal" style="max-width:700px">
+    <button class="modal-close" onclick="document.getElementById('blog-modal').classList.remove('open')">&times;</button>
+    <div id="blog-modal-body"></div>
+  </div>
+</div>
+
+<footer class="footer"><div class="container"><div class="footer-bottom"><span class="footer-copy">&copy; 2025 JUTTFHX Sensitivity Hub</span></div></div></footer>
+
+<script src="/assets/js/main.js"></script>
+<script>
+const POSTS = [
+  {id:1,cat:'guide',emoji:'🎮',title:'Ultimate Sensitivity Guide for Free Fire 2025',excerpt:'Master your sensitivity settings with our comprehensive guide covering every scope, movement type, and device category.',date:'Jun 20 2025',author:'JUTTFHX Team',reads:12400,views:34000,tags:['Sensitivity','Guide','2025']},
+  {id:2,cat:'tips',emoji:'🎯',title:'Top 10 Headshot Tricks Pro Players Use',excerpt:'Discover the exact techniques that pro players use to achieve consistent headshots. From sensitivity tweaks to finger positioning.',date:'Jun 18 2025',author:'HeadshotKing',reads:8900,views:22000,tags:['Headshot','Tips','Pro']},
+  {id:3,cat:'review',emoji:'📱',title:'Samsung Galaxy A55 5G Review for Free Fire',excerpt:'In-depth analysis of the Galaxy A55 5G performance in Free Fire. Temperature, FPS stability, and our recommended sensitivity.',date:'Jun 15 2025',author:'DeviceExpert',reads:7200,views:18500,tags:['Samsung','Review','Device']},
+  {id:4,cat:'sensitivity',emoji:'⚡',title:'How to Perfect Your Drag Shot Sensitivity',excerpt:'A step-by-step guide to finding your ideal drag shot sensitivity based on your screen size, DPI, and finger placement.',date:'Jun 12 2025',author:'DragonFF',reads:6800,views:16000,tags:['Drag Shot','Tutorial']},
+  {id:5,cat:'news',emoji:'🔥',title:'Free Fire OB47 Update: Sensitivity Changes',excerpt:'The OB47 update brought significant changes to sensitivity mechanics. Here is everything you need to know and how to re-calibrate.',date:'Jun 10 2025',author:'FF News Desk',reads:15000,views:42000,tags:['Update','OB47','News']},
+  {id:6,cat:'guide',emoji:'🏆',title:'Complete HUD Setup Guide for Competitive Play',excerpt:'Design the perfect HUD layout for competitive Free Fire play. Button placement, size optimization, and ergonomic positioning.',date:'Jun 8 2025',author:'ClawMaster',reads:5400,views:13500,tags:['HUD','Guide','Competitive']},
+];
+
+let filteredPosts = [...POSTS];
+
+function renderPosts(data) {
+  document.getElementById('blog-list').innerHTML = data.map(p => `
+    <div class="blog-card" onclick="openPost(${p.id})">
+      <div class="blog-card-img">${p.emoji}</div>
+      <div class="blog-card-body">
+        <div class="blog-card-cat">${p.cat.toUpperCase()}</div>
+        <div class="blog-card-title">${p.title}</div>
+        <div class="blog-card-excerpt">${p.excerpt}</div>
+        <div class="blog-card-meta">
+          <span>by ${p.author}</span>
+          <span>${p.date}</span>
+          <span>&#128065; ${(p.views/1000).toFixed(1)}k views</span>
+          <span>&#128214; ${(p.reads/1000).toFixed(1)}k reads</span>
+        </div>
+      </div>
+    </div>`).join('');
+  document.getElementById('trending-list').innerHTML = POSTS.slice().sort((a,b)=>b.views-a.views).slice(0,5).map((p,i) => `
+    <div class="trending-item" onclick="openPost(${p.id})">
+      <span class="trending-num">${String(i+1).padStart(2,'0')}</span>
+      <div><div class="trending-title">${p.title}</div><div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.2rem">${(p.views/1000).toFixed(1)}k views</div></div>
+    </div>`).join('');
+}
+
+window.filterBlog = function(cat, btn) {
+  if(btn) { document.querySelectorAll('#blog-cats .filter-chip').forEach(c=>c.classList.remove('active')); btn.classList.add('active'); }
+  filteredPosts = cat==='all' ? [...POSTS] : POSTS.filter(p=>p.cat===cat);
+  renderPosts(filteredPosts);
+};
+
+window.searchBlog = function(q) {
+  const lower = q.toLowerCase();
+  renderPosts(q ? POSTS.filter(p=>p.title.toLowerCase().includes(lower)||p.excerpt.toLowerCase().includes(lower)) : filteredPosts);
+};
+
+window.openPost = function(id) {
+  const p = POSTS.find(x=>x.id===id); if(!p) return;
+  document.getElementById('blog-modal-body').innerHTML = `
+    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent-blue);font-weight:700;margin-bottom:0.5rem">${p.cat}</div>
+    <div class="modal-title" style="font-size:1.3rem;line-height:1.3">${p.title}</div>
+    <div style="display:flex;gap:1rem;font-size:0.8rem;color:var(--text-muted);margin:0.75rem 0 1.5rem">
+      <span>by ${p.author}</span><span>${p.date}</span><span>${(p.views/1000).toFixed(1)}k views</span>
+    </div>
+    <div style="font-size:6rem;text-align:center;margin-bottom:1.5rem">${p.emoji}</div>
+    <p style="color:var(--text-secondary);line-height:1.8;font-size:0.9rem">${p.excerpt}</p>
+    <p style="color:var(--text-secondary);line-height:1.8;font-size:0.9rem;margin-top:1rem">This article provides expert-level guidance on mastering this aspect of Free Fire gameplay. Our team of professional players and analysts has compiled the most effective strategies and techniques to help you improve your performance.</p>
+    <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border-glass);display:flex;gap:0.75rem;flex-wrap:wrap">
+      ${p.tags.map(t=>'<span class="badge badge-blue">'+t+'</span>').join('')}
+    </div>`;
+  document.getElementById('blog-modal').classList.add('open');
+};
+
+renderPosts(filteredPosts);
+</script>
+</body>
+</html>

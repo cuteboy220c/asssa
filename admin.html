@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel - JUTTFHX Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/theme.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-primary);background:var(--bg-primary);color:var(--text-primary);display:flex;min-height:100vh;}
+.admin-sidebar{width:260px;background:rgba(2,4,8,0.97);border-right:1px solid var(--border-glass);height:100vh;position:fixed;left:0;top:0;overflow-y:auto;z-index:100;display:flex;flex-direction:column;}
+.admin-logo{padding:1.5rem;border-bottom:1px solid var(--border-glass);display:flex;align-items:center;gap:0.75rem;}
+.admin-logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.9rem;color:white;flex-shrink:0;}
+.admin-logo-text{font-family:var(--font-display);font-size:0.85rem;font-weight:700;line-height:1.2;}
+.admin-logo-sub{font-size:0.68rem;color:var(--accent-gold);}
+.admin-nav{flex:1;padding:1rem 0;}
+.admin-nav-section{padding:0.5rem 1.25rem;font-size:0.65rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);font-weight:700;margin-top:0.5rem;}
+.admin-nav-item{display:flex;align-items:center;gap:0.75rem;padding:0.7rem 1.25rem;cursor:pointer;transition:var(--transition);font-size:0.85rem;color:var(--text-secondary);border-left:3px solid transparent;}
+.admin-nav-item:hover{background:rgba(0,170,255,0.05);color:var(--text-primary);}
+.admin-nav-item.active{background:rgba(0,170,255,0.08);color:var(--accent-blue);border-left-color:var(--accent-blue);}
+.admin-nav-icon{font-size:1rem;width:22px;text-align:center;}
+.admin-nav-badge{margin-left:auto;background:var(--accent-blue);color:white;font-size:0.65rem;padding:2px 7px;border-radius:100px;font-weight:700;}
+.admin-user{padding:1rem 1.25rem;border-top:1px solid var(--border-glass);display:flex;align-items:center;gap:0.75rem;}
+.admin-user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent-gold),#b8860b);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:#000;}
+.admin-main{margin-left:260px;flex:1;min-height:100vh;display:flex;flex-direction:column;}
+.admin-topbar{background:rgba(2,4,8,0.9);border-bottom:1px solid var(--border-glass);padding:0.9rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;backdrop-filter:blur(20px);}
+.admin-page-title{font-family:var(--font-display);font-size:1.1rem;font-weight:700;}
+.admin-topbar-actions{display:flex;align-items:center;gap:1rem;}
+.admin-notif-btn{position:relative;width:36px;height:36px;background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;}
+.admin-notif-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:#ff4444;}
+.admin-content{padding:2rem;flex:1;}
+.admin-panel{display:none;}
+.admin-panel.active{display:block;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:2rem;}
+.admin-stat-card{background:var(--gradient-card);border:1px solid var(--border-glass);border-radius:var(--radius-lg);padding:1.25rem;position:relative;overflow:hidden;}
+.admin-stat-card::before{content:'';position:absolute;top:0;right:0;width:80px;height:80px;border-radius:50%;opacity:0.08;}
+.admin-stat-card.blue::before{background:var(--accent-blue);}
+.admin-stat-card.gold::before{background:var(--accent-gold);}
+.admin-stat-card.green::before{background:#00c864;}
+.admin-stat-card.purple::before{background:var(--accent-purple);}
+.admin-stat-label{font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem;}
+.admin-stat-val{font-family:var(--font-display);font-size:2rem;font-weight:900;margin-bottom:0.25rem;}
+.admin-stat-change{font-size:0.75rem;}
+.admin-stat-change.up{color:#00c864;}
+.admin-stat-change.down{color:#ff4444;}
+.data-table{width:100%;border-collapse:collapse;font-size:0.85rem;}
+.data-table thead th{text-align:left;padding:0.75rem 1rem;background:rgba(0,170,255,0.04);color:var(--text-muted);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border-glass);white-space:nowrap;}
+.data-table tbody tr{border-bottom:1px solid rgba(255,255,255,0.03);transition:var(--transition);}
+.data-table tbody tr:hover{background:rgba(0,170,255,0.02);}
+.data-table tbody td{padding:0.75rem 1rem;vertical-align:middle;}
+.action-btn{padding:4px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:var(--font-primary);font-weight:600;border:1px solid;transition:var(--transition);}
+.action-btn-edit{background:rgba(0,170,255,0.1);border-color:rgba(0,170,255,0.3);color:var(--accent-blue);}
+.action-btn-edit:hover{background:rgba(0,170,255,0.2);}
+.action-btn-del{background:rgba(255,68,68,0.1);border-color:rgba(255,68,68,0.3);color:#ff4444;}
+.action-btn-del:hover{background:rgba(255,68,68,0.2);}
+.action-btn-approve{background:rgba(0,200,100,0.1);border-color:rgba(0,200,100,0.3);color:#00c864;}
+.action-btn-approve:hover{background:rgba(0,200,100,0.2);}
+.action-btn-ban{background:rgba(255,136,0,0.1);border-color:rgba(255,136,0,0.3);color:#ff8800;}
+.table-container{background:var(--gradient-card);border:1px solid var(--border-glass);border-radius:var(--radius-lg);overflow:hidden;}
+.table-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border-glass);display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;}
+.table-title{font-family:var(--font-display);font-size:0.95rem;font-weight:700;}
+.chart-container{background:var(--gradient-card);border:1px solid var(--border-glass);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.5rem;}
+.chart-title{font-family:var(--font-display);font-size:0.9rem;font-weight:700;margin-bottom:1.25rem;}
+.bar-chart{display:flex;align-items:flex-end;gap:0.5rem;height:120px;}
+.bar-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:0.35rem;}
+.bar-fill{width:100%;border-radius:4px 4px 0 0;transition:height 0.8s ease;min-height:4px;}
+.bar-label{font-size:0.65rem;color:var(--text-muted);text-align:center;}
+.bar-val{font-size:0.7rem;color:var(--text-secondary);font-weight:700;}
+.admin-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.status-online{color:#00c864;font-size:0.75rem;font-weight:700;}
+.status-offline{color:#ff4444;font-size:0.75rem;font-weight:700;}
+.status-banned{color:#ff8800;font-size:0.75rem;font-weight:700;}
+.live-feed{max-height:300px;overflow-y:auto;}
+.live-feed-item{display:flex;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:flex-start;font-size:0.8rem;}
+.feed-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;flex-shrink:0;}
+.admin-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;}
+.admin-alert{padding:1rem 1.25rem;border-radius:var(--radius-sm);font-size:0.85rem;margin-bottom:1rem;display:flex;align-items:center;gap:0.75rem;}
+.admin-alert-info{background:rgba(0,170,255,0.1);border:1px solid rgba(0,170,255,0.2);color:var(--accent-blue);}
+.admin-alert-warning{background:rgba(255,136,0,0.1);border:1px solid rgba(255,136,0,0.2);color:#ff8800;}
+.search-bar{display:flex;gap:0.75rem;align-items:center;}
+.search-bar input{padding:0.5rem 1rem;background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);border-radius:var(--radius-sm);color:var(--text-primary);font-family:var(--font-primary);font-size:0.85rem;outline:none;width:220px;}
+.search-bar input:focus{border-color:var(--accent-blue);}
+@media(max-width:1024px){.stats-grid{grid-template-columns:repeat(2,1fr);}.admin-grid-2{grid-template-columns:1fr;}}
+@media(max-width:768px){.admin-sidebar{width:100%;height:auto;position:static;}.admin-main{margin-left:0;}.stats-grid{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+<div id="admin-gate" style="display:none;min-height:100vh;align-items:center;justify-content:center;text-align:center;padding:2rem">
+  <div>
+    <div style="font-size:4rem;margin-bottom:1rem">&#128274;</div>
+    <h2 style="font-family:var(--font-display);margin-bottom:0.75rem">Admin Access Required</h2>
+    <p style="color:var(--text-muted);margin-bottom:1.5rem">You don't have permission to access this panel.</p>
+    <a href="/login.html" class="btn btn-primary">Sign In</a>
+  </div>
+</div>
+
+<div id="admin-app" style="display:flex;width:100%">
+<!-- SIDEBAR -->
+<aside class="admin-sidebar">
+  <div class="admin-logo">
+    <div class="admin-logo-icon">JX</div>
+    <div>
+      <div class="admin-logo-text">JUTTFHX Hub</div>
+      <div class="admin-logo-sub">Admin Control Center</div>
+    </div>
+  </div>
+  <nav class="admin-nav">
+    <div class="admin-nav-section">Main</div>
+    <div class="admin-nav-item active" onclick="showSection('dashboard',this)"><span class="admin-nav-icon">&#128202;</span>Dashboard</div>
+    <div class="admin-nav-item" onclick="showSection('analytics',this)"><span class="admin-nav-icon">&#128200;</span>Analytics</div>
+    <div class="admin-nav-section">Content</div>
+    <div class="admin-nav-item" onclick="showSection('users',this)"><span class="admin-nav-icon">&#128101;</span>Users<span class="admin-nav-badge" id="badge-users">0</span></div>
+    <div class="admin-nav-item" onclick="showSection('devices',this)"><span class="admin-nav-icon">&#128241;</span>Devices</div>
+    <div class="admin-nav-item" onclick="showSection('sensitivities',this)"><span class="admin-nav-icon">&#9889;</span>Sensitivities</div>
+    <div class="admin-nav-item" onclick="showSection('huds',this)"><span class="admin-nav-icon">&#127918;</span>HUD Gallery</div>
+    <div class="admin-nav-section">Community</div>
+    <div class="admin-nav-item" onclick="showSection('reviews',this)"><span class="admin-nav-icon">&#11088;</span>Reviews<span class="admin-nav-badge" id="badge-reviews">0</span></div>
+    <div class="admin-nav-item" onclick="showSection('comments',this)"><span class="admin-nav-icon">&#128172;</span>Comments</div>
+    <div class="admin-nav-item" onclick="showSection('requests',this)"><span class="admin-nav-icon">&#128196;</span>Requests<span class="admin-nav-badge" id="badge-requests">0</span></div>
+    <div class="admin-nav-item" onclick="showSection('polls',this)"><span class="admin-nav-icon">&#128394;</span>Polls</div>
+    <div class="admin-nav-section">Publishing</div>
+    <div class="admin-nav-item" onclick="showSection('blog',this)"><span class="admin-nav-icon">&#128214;</span>Blog</div>
+    <div class="admin-nav-item" onclick="showSection('news',this)"><span class="admin-nav-icon">&#128240;</span>News</div>
+    <div class="admin-nav-item" onclick="showSection('tournaments',this)"><span class="admin-nav-icon">&#127942;</span>Tournaments</div>
+    <div class="admin-nav-section">System</div>
+    <div class="admin-nav-item" onclick="showSection('notifications',this)"><span class="admin-nav-icon">&#128276;</span>Notifications</div>
+    <div class="admin-nav-item" onclick="showSection('audit',this)"><span class="admin-nav-icon">&#128065;</span>Audit Logs</div>
+    <div class="admin-nav-item" onclick="showSection('settings',this)"><span class="admin-nav-icon">&#9881;</span>Settings</div>
+    <div class="admin-nav-item" onclick="window.location.href='/index.html'"><span class="admin-nav-icon">&#8592;</span>Back to Site</div>
+  </nav>
+  <div class="admin-user">
+    <div class="admin-user-avatar" id="admin-avatar">SA</div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:0.82rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="admin-name">Super Admin</div>
+      <div style="font-size:0.68rem;color:var(--accent-gold)">Super Admin</div>
+    </div>
+    <button style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:0.9rem" onclick="adminLogout()">&#128275;</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="admin-main">
+  <div class="admin-topbar">
+    <div class="admin-page-title" id="page-title">Dashboard Overview</div>
+    <div class="admin-topbar-actions">
+      <div style="font-size:0.8rem;color:var(--text-muted)" id="current-time"></div>
+      <div class="admin-notif-btn" onclick="showSection('notifications',null)">&#128276;<div class="admin-notif-dot"></div></div>
+      <div style="font-size:0.8rem;color:#00c864">&#9679; Live</div>
+    </div>
+  </div>
+  <div class="admin-content">
+
+  <!-- DASHBOARD -->
+  <div class="admin-panel active" id="panel-dashboard">
+    <div class="stats-grid">
+      <div class="admin-stat-card blue">
+        <div class="admin-stat-label">Total Users</div>
+        <div class="admin-stat-val" style="color:var(--accent-blue)" id="stat-users">512,480</div>
+        <div class="admin-stat-change up">+2.4% this week</div>
+      </div>
+      <div class="admin-stat-card gold">
+        <div class="admin-stat-label">Active Today</div>
+        <div class="admin-stat-val" style="color:var(--accent-gold)" id="stat-active">18,234</div>
+        <div class="admin-stat-change up">+5.1% vs yesterday</div>
+      </div>
+      <div class="admin-stat-card green">
+        <div class="admin-stat-label">Total Devices</div>
+        <div class="admin-stat-val" style="color:#00c864" id="stat-devices">2,148</div>
+        <div class="admin-stat-change up">+12 this week</div>
+      </div>
+      <div class="admin-stat-card purple">
+        <div class="admin-stat-label">Reviews</div>
+        <div class="admin-stat-val" style="color:var(--accent-purple)" id="stat-reviews-count">94,320</div>
+        <div class="admin-stat-change up">+340 today</div>
+      </div>
+    </div>
+    <div class="stats-grid">
+      <div class="admin-stat-card">
+        <div class="admin-stat-label">Sensitivities Generated</div>
+        <div class="admin-stat-val" style="color:var(--accent-blue)">3.2M</div>
+        <div class="admin-stat-change up">+1.8% today</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-label">Pending Requests</div>
+        <div class="admin-stat-val" style="color:#ff8800">47</div>
+        <div class="admin-stat-change down">+8 new today</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-label">Tournament Players</div>
+        <div class="admin-stat-val" style="color:var(--accent-gold)">2,430</div>
+        <div class="admin-stat-change up">12 active events</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-label">Uptime</div>
+        <div class="admin-stat-val" style="color:#00c864">99.9%</div>
+        <div class="admin-stat-change up">All systems nominal</div>
+      </div>
+    </div>
+    <div class="admin-grid-2">
+      <div class="chart-container">
+        <div class="chart-title">User Growth (Last 7 Days)</div>
+        <div class="bar-chart" id="growth-chart"></div>
+      </div>
+      <div class="chart-container">
+        <div class="chart-title">Top Searched Devices</div>
+        <div id="top-devices-chart"></div>
+      </div>
+    </div>
+    <div class="admin-grid-2">
+      <div class="chart-container">
+        <div class="chart-title">Live Activity Feed</div>
+        <div class="live-feed" id="live-feed"></div>
+      </div>
+      <div class="chart-container">
+        <div class="chart-title">Platform Health</div>
+        <div id="health-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANALYTICS -->
+  <div class="admin-panel" id="panel-analytics">
+    <div class="stats-grid">
+      <div class="admin-stat-card blue"><div class="admin-stat-label">DAU</div><div class="admin-stat-val" style="color:var(--accent-blue)">18,234</div><div class="admin-stat-change up">+5.1%</div></div>
+      <div class="admin-stat-card gold"><div class="admin-stat-label">MAU</div><div class="admin-stat-val" style="color:var(--accent-gold)">284,000</div><div class="admin-stat-change up">+12.3%</div></div>
+      <div class="admin-stat-card green"><div class="admin-stat-label">Bounce Rate</div><div class="admin-stat-val" style="color:#00c864">23%</div><div class="admin-stat-change up">-2.1%</div></div>
+      <div class="admin-stat-card purple"><div class="admin-stat-label">Avg Session</div><div class="admin-stat-val" style="color:var(--accent-purple)">8m42s</div><div class="admin-stat-change up">+18s</div></div>
+    </div>
+    <div class="admin-grid-2">
+      <div class="chart-container"><div class="chart-title">Daily Active Users (30 Days)</div><div class="bar-chart" id="dau-chart"></div></div>
+      <div class="chart-container"><div class="chart-title">Device Searches by Brand</div><div id="brand-chart"></div></div>
+    </div>
+    <div class="chart-container"><div class="chart-title">Sensitivity Generator Usage (Weekly)</div><div class="bar-chart" id="sens-usage-chart"></div></div>
+    <div class="chart-container">
+      <div class="chart-title">Traffic Sources</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1rem">
+        <div style="text-align:center"><div style="font-family:var(--font-display);font-size:1.5rem;color:var(--accent-blue)">42%</div><div style="font-size:0.75rem;color:var(--text-muted)">Direct</div></div>
+        <div style="text-align:center"><div style="font-family:var(--font-display);font-size:1.5rem;color:var(--accent-gold)">28%</div><div style="font-size:0.75rem;color:var(--text-muted)">TikTok</div></div>
+        <div style="text-align:center"><div style="font-family:var(--font-display);font-size:1.5rem;color:#25D366">18%</div><div style="font-size:0.75rem;color:var(--text-muted)">WhatsApp</div></div>
+        <div style="text-align:center"><div style="font-family:var(--font-display);font-size:1.5rem;color:#FF0000">8%</div><div style="font-size:0.75rem;color:var(--text-muted)">YouTube</div></div>
+        <div style="text-align:center"><div style="font-family:var(--font-display);font-size:1.5rem;color:#00c864">4%</div><div style="font-size:0.75rem;color:var(--text-muted)">Other</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- USERS -->
+  <div class="admin-panel" id="panel-users">
+    <div class="table-container">
+      <div class="table-header">
+        <div class="table-title">User Management</div>
+        <div class="search-bar"><input type="text" placeholder="Search users..." oninput="filterTable('users-tbody',this.value)"><button class="btn btn-primary btn-sm" onclick="openAddUser()">+ Add User</button></div>
+      </div>
+      <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>User</th><th>Email</th><th>Role</th><th>XP</th><th>Joined</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="users-tbody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- DEVICES -->
+  <div class="admin-panel" id="panel-devices">
+    <div class="table-container">
+      <div class="table-header">
+        <div class="table-title">Device Management</div>
+        <div class="search-bar"><input type="text" placeholder="Search devices..."><button class="btn btn-primary btn-sm" onclick="openAddDevice()">+ Add Device</button></div>
+      </div>
+      <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Device</th><th>Brand</th><th>Tier</th><th>Score</th><th>Reviews</th><th>Featured</th><th>Actions</th></tr></thead>
+      <tbody id="devices-tbody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- SENSITIVITIES -->
+  <div class="admin-panel" id="panel-sensitivities">
+    <div class="table-container">
+      <div class="table-header">
+        <div class="table-title">Sensitivity Management</div>
+        <button class="btn btn-primary btn-sm" onclick="openAddSens()">+ Add Settings</button>
+      </div>
+      <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Device</th><th>General</th><th>Red Dot</th><th>2x</th><th>4x</th><th>Sniper</th><th>By</th><th>Actions</th></tr></thead>
+      <tbody id="sens-tbody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- HUDS -->
+  <div class="admin-panel" id="panel-huds">
+    <div class="table-container">
+      <div class="table-header"><div class="table-title">HUD Management</div><button class="btn btn-primary btn-sm" onclick="openAddHUD()">+ Add HUD</button></div>
+      <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Title</th><th>Author</th><th>Category</th><th>Likes</th><th>Code</th><th>Actions</th></tr></thead>
+      <tbody id="huds-tbody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- REVIEWS -->
+  <div class="admin-panel" id="panel-reviews">
+    <div class="admin-alert admin-alert-warning">&#9888; <span>8 reviews pending approval</span></div>
+    <div class="table-container">
+      <div class="table-header"><div class="table-title">Review Management</div>
+        <div class="search-bar"><input type="text" placeholder="Search reviews..."><select class="form-input form-select" style="width:auto"><option>All</option><option>Pending</option><option>Approved</option><option>Flagged</option></select></div>
+      </div>
+      <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>User</th><th>Device</th><th>Rating</th><th>Review</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="reviews-tbody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- COMMENTS -->
+  <div class="admin-panel" id="panel-comments">
+    <div class="table-container">
+      <div class="table-header"><div class="table-title">Comment Moderation</div>
+        <div style="display:flex;gap:0.5rem">
+          <button class="btn btn-sm action-btn-del" onclick="bulkDeleteFlagged()">Delete Flagged</button>
+          <button class="btn btn-sm action-btn-approve" onclick="approveAll()">Approve All</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>User</th><th>Comment</th><th>Page</th><th>Flagged</th><th>Actions</th></tr></thead>
+      <tbody id="comments-tbody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- REQUESTS -->
+  <div class="admin-panel" id="panel-requests">
+    <div class="admin-alert admin-alert-info">&#9432; <span>47 device requests awaiting review</span></div>
+    <div class="table-container">
+      <div class="table-header"><div class="table-title">Device Requests</div></div>
+      <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Device</th><th>Requested By</th><th>Votes</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="requests-tbody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- POLLS -->
+  <div class="admin-panel" id="panel-polls">
+    <div class="table-container">
+      <div class="table-header"><div class="table-title">Community Polls</div><button class="btn btn-primary btn-sm" onclick="createPoll()">+ Create Poll</button></div>
+      <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Poll</th><th>Votes</th><th>Status</th><th>Ends</th><th>Actions</th></tr></thead>
+      <tbody id="polls-tbody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- BLOG -->
+  <div class="admin-panel" id="panel-blog">
+    <div class="table-container">
+      <div class="table-header"><div class="table-title">Blog Management</div><button class="btn btn-primary btn-sm" onclick="openCreatePost()">+ New Article</button></div>
+      <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Title</th><th>Author</th><th>Category</th><th>Views</th><th>Published</th><th>Actions</th></tr></thead>
+      <tbody id="blog-tbody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- NEWS -->
+  <div class="admin-panel" id="panel-news">
+    <div class="table-container">
+      <div class="table-header"><div class="table-title">News Management</div><button class="btn btn-primary btn-sm" onclick="openPublishNews()">+ Publish News</button></div>
+      <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Headline</th><th>Category</th><th>Views</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="news-tbody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- TOURNAMENTS -->
+  <div class="admin-panel" id="panel-tournaments">
+    <div class="table-container">
+      <div class="table-header"><div class="table-title">Tournament Management</div><button class="btn btn-primary btn-sm" onclick="openCreateTournament()">+ Create Event</button></div>
+      <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Title</th><th>Format</th><th>Prize</th><th>Players</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+      <tbody id="tournaments-tbody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- NOTIFICATIONS -->
+  <div class="admin-panel" id="panel-notifications">
+    <div class="admin-grid-2">
+      <div class="chart-container">
+        <div class="chart-title">Send Announcement</div>
+        <div class="form-group"><label class="form-label">Title</label><input type="text" class="form-input" id="notif-title" placeholder="Announcement title"></div>
+        <div class="form-group"><label class="form-label">Message</label><textarea class="form-input" id="notif-msg" rows="4" placeholder="Your message..."></textarea></div>
+        <div class="form-group">
+          <label class="form-label">Target Audience</label>
+          <select class="form-input form-select" id="notif-target">
+            <option>All Users</option><option>Admins Only</option><option>Moderators</option><option>New Users</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:0.75rem">
+          <button class="btn btn-primary" onclick="sendAnnouncement()">Send Announcement</button>
+          <button class="btn btn-outline" onclick="scheduleNotif()">Schedule</button>
+        </div>
+      </div>
+      <div class="chart-container">
+        <div class="chart-title">Send Push Notification</div>
+        <div class="form-group"><label class="form-label">Title</label><input type="text" class="form-input" id="push-title" placeholder="Push title"></div>
+        <div class="form-group"><label class="form-label">Body</label><input type="text" class="form-input" id="push-body" placeholder="Push message"></div>
+        <div class="form-group"><label class="form-label">Click URL</label><input type="text" class="form-input" id="push-url" placeholder="https://..." value="/index.html"></div>
+        <button class="btn btn-gold" onclick="sendPushNotif()">Send Push Notification</button>
+      </div>
+    </div>
+    <div class="table-container">
+      <div class="table-header"><div class="table-title">Notification History</div></div>
+      <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Title</th><th>Sent By</th><th>Audience</th><th>Sent At</th><th>Reads</th></tr></thead>
+      <tbody id="notif-tbody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- AUDIT LOGS -->
+  <div class="admin-panel" id="panel-audit">
+    <div class="table-container">
+      <div class="table-header"><div class="table-title">Audit Logs</div>
+        <div class="search-bar"><input type="text" placeholder="Search logs..."></div>
+      </div>
+      <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Action</th><th>User</th><th>IP</th><th>Resource</th><th>Timestamp</th><th>Result</th></tr></thead>
+      <tbody id="audit-tbody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="admin-panel" id="panel-settings">
+    <div class="admin-grid-2">
+      <div class="chart-container">
+        <div class="chart-title">Site Settings</div>
+        <div class="form-group"><label class="form-label">Site Name</label><input type="text" class="form-input" value="JUTTFHX Sensitivity Hub"></div>
+        <div class="form-group"><label class="form-label">Site Description</label><textarea class="form-input" rows="2">Premium Free Fire sensitivity platform</textarea></div>
+        <div class="form-group"><label class="form-label">Maintenance Mode</label>
+          <div style="display:flex;align-items:center;gap:0.75rem">
+            <div class="toggle-switch" id="maint-toggle" onclick="this.classList.toggle('on')"><div style="width:20px;height:20px;border-radius:50%;background:white;position:absolute;top:3px;left:3px;transition:var(--transition)"></div></div>
+            <span style="font-size:0.85rem;color:var(--text-secondary)">Offline for maintenance</span>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="showToast('Settings saved!','success')">Save Settings</button>
+      </div>
+      <div class="chart-container">
+        <div class="chart-title">Super Admin Control</div>
+        <div style="display:flex;flex-direction:column;gap:0.75rem">
+          <button class="btn btn-outline" onclick="clearCache()">Clear Cache</button>
+          <button class="btn btn-outline" onclick="exportDatabase()">Export Database</button>
+          <button class="btn btn-outline" onclick="runBackup()">Run Backup</button>
+          <button class="btn btn-outline" onclick="viewSecurityRules()">View Security Rules</button>
+          <button class="btn btn-sm" style="background:rgba(255,68,68,0.15);border:1px solid rgba(255,68,68,0.3);color:#ff4444" onclick="if(confirm('Reset all analytics data?'))showToast('Analytics reset','success')">Reset Analytics Data</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- admin-content -->
+</main>
+</div><!-- admin-app -->
+
+<!-- Modals -->
+<div class="modal-overlay" id="admin-modal">
+  <div class="modal" style="max-width:600px">
+    <button class="modal-close" onclick="document.getElementById('admin-modal').classList.remove('open')">&times;</button>
+    <div id="admin-modal-body"></div>
+  </div>
+</div>
+
+<script>
+function showToast(msg, type) {
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + (type||'info'); t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.classList.add('show'), 10);
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 3000);
+}
+</script>
+<script src="/assets/js/main.js"></script>
+<script src="/admin/dashboard.js"></script>
+<script src="/admin/users.js"></script>
+<script src="/admin/devices.js"></script>
+<script src="/admin/reviews.js"></script>
+<script src="/admin/analytics.js"></script>
+<script src="/admin/notifications.js"></script>
+<script type="module">
+import { onAuthChange, getUserRole } from '/firebase/auth.js';
+import { logAudit, isAdmin, isSuperAdmin } from '/firebase/security.js';
+
+onAuthChange(async (user) => {
+  if(!user) {
+    document.getElementById('admin-app').style.display='none';
+    document.getElementById('admin-gate').style.display='flex';
+    return;
+  }
+  const role = await getUserRole(user.uid);
+  if(!['admin','superAdmin','moderator'].includes(role)) {
+    document.getElementById('admin-app').style.display='none';
+    document.getElementById('admin-gate').style.display='flex';
+    return;
+  }
+  const name = user.displayName||user.email?.split('@')[0]||'Admin';
+  document.getElementById('admin-name').textContent = name;
+  document.getElementById('admin-avatar').textContent = name.substring(0,2).toUpperCase();
+  logAudit('admin_login', user.uid, { role, timestamp: new Date().toISOString() });
+  initAdminDashboard();
+});
+
+window.adminLogout = async function() {
+  const { logout } = await import('/firebase/auth.js');
+  await logout();
+  window.location.href='/index.html';
+};
+</script>
+</body>
+</html>

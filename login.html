@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - JUTTFHX Sensitivity Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/theme.css">
+<style>
+.auth-page { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:2rem; position:relative; }
+.auth-card { width:100%; max-width:460px; background:rgba(5,10,20,0.97); border:1px solid var(--border-glass); border-radius:var(--radius-xl); padding:2.5rem; position:relative; z-index:2; box-shadow:0 30px 80px rgba(0,0,0,0.7); }
+.auth-logo { text-align:center; margin-bottom:2rem; }
+.auth-logo-icon { width:60px; height:60px; background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple)); border-radius:16px; display:inline-flex; align-items:center; justify-content:center; font-size:1.6rem; font-weight:900; color:white; box-shadow:0 0 30px rgba(0,170,255,0.4); margin-bottom:0.75rem; }
+.auth-title { font-family:var(--font-display); font-size:1.6rem; font-weight:700; }
+.auth-subtitle { font-size:0.85rem; color:var(--text-muted); margin-top:0.25rem; }
+.divider-text { display:flex; align-items:center; gap:1rem; margin:1.25rem 0; }
+.divider-text::before,.divider-text::after { content:''; flex:1; height:1px; background:var(--border-glass); }
+.divider-text span { font-size:0.75rem; color:var(--text-muted); white-space:nowrap; }
+.google-btn { width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:var(--radius-sm); color:var(--text-primary); font-family:var(--font-primary); font-size:0.9rem; font-weight:600; cursor:pointer; transition:var(--transition); display:flex; align-items:center; justify-content:center; gap:0.75rem; }
+.google-btn:hover { background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.2); }
+.input-icon-wrap { position:relative; }
+.input-icon { position:absolute; left:1rem; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:1rem; pointer-events:none; }
+.input-with-icon { padding-left:2.75rem; }
+.toggle-pw { position:absolute; right:1rem; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:0.9rem; }
+.remember-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; }
+.remember-label { display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; color:var(--text-secondary); cursor:pointer; }
+.remember-label input { accent-color:var(--accent-blue); width:16px; height:16px; }
+.forgot-link { font-size:0.85rem; color:var(--accent-blue); text-decoration:none; }
+.forgot-link:hover { text-decoration:underline; }
+.auth-footer { text-align:center; margin-top:1.5rem; font-size:0.875rem; color:var(--text-muted); }
+.auth-footer a { color:var(--accent-blue); text-decoration:none; font-weight:600; }
+</style>
+</head>
+<body>
+<div id="loading-screen"><div class="loading-logo">LOGIN</div><div class="loading-bar"><div class="loading-bar-fill"></div></div><div class="loading-text">Securing connection...</div></div>
+<div class="aurora-bg"></div>
+
+<div class="auth-page">
+  <div class="auth-card animate-fade-in">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">JX</div>
+      <div class="auth-title">Welcome Back</div>
+      <div class="auth-subtitle">Sign in to JUTTFHX Sensitivity Hub</div>
+    </div>
+
+    <div id="auth-alert" style="display:none"></div>
+
+    <!-- Google Sign In -->
+    <button class="google-btn" onclick="loginGoogle()">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+      Continue with Google
+    </button>
+
+    <div class="divider-text"><span>or sign in with email</span></div>
+
+    <form id="login-form" onsubmit="loginEmail(event)">
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <div class="input-icon-wrap">
+          <span class="input-icon">&#9993;</span>
+          <input type="email" class="form-input input-with-icon" id="login-email" placeholder="you@example.com" required autocomplete="email">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="input-icon-wrap">
+          <span class="input-icon">&#128274;</span>
+          <input type="password" class="form-input input-with-icon" id="login-password" placeholder="Your password" required autocomplete="current-password" style="padding-right:3rem">
+          <button type="button" class="toggle-pw" onclick="togglePassword('login-password',this)">&#128065;</button>
+        </div>
+      </div>
+      <div class="remember-row">
+        <label class="remember-label">
+          <input type="checkbox" id="remember-me"> Remember Me
+        </label>
+        <a href="#" class="forgot-link" onclick="showForgotPassword()">Forgot Password?</a>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;font-size:1rem;padding:0.9rem" id="login-btn">
+        &#128274; Sign In
+      </button>
+    </form>
+
+    <!-- Forgot Password Form -->
+    <form id="forgot-form" style="display:none" onsubmit="sendReset(event)">
+      <div style="margin-bottom:1.25rem">
+        <button type="button" onclick="showLoginForm()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:0.85rem;display:flex;align-items:center;gap:0.3rem">&#8592; Back to Login</button>
+      </div>
+      <div style="margin-bottom:1.5rem">
+        <div class="auth-title" style="font-size:1.3rem">Reset Password</div>
+        <div class="auth-subtitle">Enter your email to receive reset instructions</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <div class="input-icon-wrap">
+          <span class="input-icon">&#9993;</span>
+          <input type="email" class="form-input input-with-icon" id="reset-email" placeholder="you@example.com" required>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;padding:0.9rem">&#9993; Send Reset Link</button>
+    </form>
+
+    <div class="auth-footer">
+      Don't have an account? <a href="/register.html">Create Free Account &#8594;</a>
+    </div>
+    <div class="auth-footer" style="margin-top:0.5rem">
+      <a href="/index.html" style="color:var(--text-muted);font-size:0.8rem">&#8592; Back to Home</a>
+    </div>
+  </div>
+</div>
+
+<script src="/assets/js/main.js"></script>
+<script type="module">
+import { loginWithEmail, loginWithGoogle, resetPassword, onAuthChange } from '/firebase/auth.js';
+
+onAuthChange((user) => { if(user) window.location.href = '/profile.html'; });
+
+window.loginEmail = async function(e) {
+  e.preventDefault();
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const remember = document.getElementById('remember-me').checked;
+  const btn = document.getElementById('login-btn');
+  btn.textContent = 'Signing in...'; btn.disabled = true;
+  clearAlert();
+  const result = await loginWithEmail(email, password, remember);
+  if(result.success) {
+    showAlert('&#10003; Login successful! Redirecting...','success');
+    setTimeout(() => { const r=new URLSearchParams(location.search).get('redirect'); window.location.href=r||'/profile.html'; }, 1000);
+  } else {
+    showAlert(result.error, 'error');
+    btn.innerHTML = '&#128274; Sign In'; btn.disabled = false;
+  }
+};
+
+window.loginGoogle = async function() {
+  clearAlert();
+  const result = await loginWithGoogle();
+  if(result.success) { window.location.href='/profile.html'; }
+  else { showAlert(result.error,'error'); }
+};
+
+window.sendReset = async function(e) {
+  e.preventDefault();
+  const email = document.getElementById('reset-email').value;
+  const result = await resetPassword(email);
+  if(result.success) { showAlert('&#10003; Reset email sent! Check your inbox.','success'); }
+  else { showAlert(result.error,'error'); }
+};
+
+window.showForgotPassword = function() {
+  document.getElementById('login-form').style.display='none';
+  document.getElementById('forgot-form').style.display='block';
+};
+window.showLoginForm = function() {
+  document.getElementById('forgot-form').style.display='none';
+  document.getElementById('login-form').style.display='block';
+};
+window.togglePassword = function(id, btn) {
+  const input = document.getElementById(id);
+  input.type = input.type==='password' ? 'text' : 'password';
+  btn.textContent = input.type==='password' ? '&#128065;' : '&#128588;';
+};
+function showAlert(msg, type) {
+  const el = document.getElementById('auth-alert');
+  el.className = `alert alert-${type}`; el.innerHTML = msg; el.style.display='flex';
+}
+function clearAlert() { document.getElementById('auth-alert').style.display='none'; }
+</script>
+</body>
+</html>

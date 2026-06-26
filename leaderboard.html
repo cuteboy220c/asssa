@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leaderboard - JUTTFHX Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/theme.css">
+<style>
+.lb-hero{padding:120px 0 60px;background:var(--gradient-hero);position:relative;overflow:hidden;}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:1rem;margin-bottom:3rem;}
+.podium-item{text-align:center;position:relative;}
+.podium-block{border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:center;}
+.podium-1{background:linear-gradient(135deg,#b8860b,#ffd700);width:120px;height:100px;order:2;}
+.podium-2{background:linear-gradient(135deg,#708090,#c0c0c0);width:100px;height:75px;order:1;}
+.podium-3{background:linear-gradient(135deg,#8B4513,#cd7f32);width:100px;height:60px;order:3;}
+.podium-number{font-family:var(--font-display);font-size:1.8rem;font-weight:900;color:rgba(0,0,0,0.6);}
+.podium-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;border:3px solid;margin:0 auto 0.5rem;position:absolute;bottom:100%;left:50%;transform:translateX(-50%);margin-bottom:8px;}
+.podium-1 .podium-avatar{border-color:#ffd700;box-shadow:0 0 20px rgba(255,215,0,0.5);}
+.podium-2 .podium-avatar{border-color:#c0c0c0;}
+.podium-3 .podium-avatar{border-color:#cd7f32;}
+.podium-name{font-size:0.8rem;font-weight:700;margin-top:0.5rem;}
+.podium-xp{font-size:0.7rem;color:var(--text-muted);}
+.lb-top3{padding-top:80px;}
+.lb-filter{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.lb-table{background:var(--gradient-card);border:1px solid var(--border-glass);border-radius:var(--radius-lg);overflow:hidden;}
+.lb-table-header{display:grid;grid-template-columns:60px 1fr 120px 100px 100px;gap:0;padding:1rem 1.25rem;background:rgba(0,170,255,0.05);border-bottom:1px solid var(--border-glass);font-size:0.75rem;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;}
+.lb-row{display:grid;grid-template-columns:60px 1fr 120px 100px 100px;gap:0;padding:0.85rem 1.25rem;border-bottom:1px solid rgba(255,255,255,0.04);transition:var(--transition);align-items:center;}
+.lb-row:hover{background:rgba(0,170,255,0.03);}
+.lb-row:last-child{border-bottom:none;}
+.lb-row.top-3{background:rgba(255,215,0,0.02);}
+.xp-badge{font-family:var(--font-display);font-size:0.85rem;font-weight:700;color:var(--accent-blue);}
+.level-badge{font-size:0.8rem;color:var(--accent-gold);font-weight:700;}
+@media(max-width:768px){.lb-table-header,.lb-row{grid-template-columns:50px 1fr 80px;}.lb-table-header>*:nth-child(4),.lb-row>*:nth-child(4),.lb-table-header>*:nth-child(5),.lb-row>*:nth-child(5){display:none;}}
+</style>
+</head>
+<body>
+<div id="loading-screen"><div class="loading-logo">RANKS</div><div class="loading-bar"><div class="loading-bar-fill"></div></div><div class="loading-text">Loading leaderboard...</div></div>
+<div class="aurora-bg"></div>
+
+<nav class="navbar" id="navbar">
+  <a href="/index.html" class="navbar-brand"><div class="navbar-logo">JX</div><span class="navbar-title">JUTTFHX <span>Hub</span></span></a>
+  <ul class="navbar-nav" id="nav-links">
+    <li><a href="/index.html">Home</a></li><li><a href="/device.html">Devices</a></li><li><a href="/sensitivity.html">Sensitivity</a></li>
+    <li><a href="/leaderboard.html" class="active">Leaderboard</a></li><li><a href="/hud-gallery.html">HUD</a></li><li><a href="/blog.html">Blog</a></li>
+  </ul>
+  <div class="navbar-actions" id="nav-actions"><a href="/login.html" class="btn-nav-login">Login</a><a href="/register.html" class="btn-nav-cta">Join Free</a></div>
+  <button class="navbar-hamburger" onclick="document.getElementById('nav-links').classList.toggle('mobile-open')">&#9776;</button>
+</nav>
+
+<section class="lb-hero">
+  <div class="container" style="position:relative;z-index:2;text-align:center">
+    <div class="section-eyebrow">Global Rankings</div>
+    <h1 class="section-title">&#127942; Player <span class="highlight">Leaderboard</span></h1>
+    <p class="section-desc">Top players ranked by XP, contributions, and community activity.</p>
+  </div>
+</section>
+
+<section class="section" style="margin-top:-2rem">
+  <div class="container">
+    <!-- Podium Top 3 -->
+    <div class="lb-top3">
+      <div class="podium" id="podium-container">
+        <div class="podium-item">
+          <div style="position:relative;padding-bottom:0">
+            <div class="podium-avatar" style="border-color:#c0c0c0;box-shadow:0 0 15px rgba(192,192,192,0.3)">AK</div>
+          </div>
+          <div style="margin-bottom:8px">
+            <div class="podium-name">AK_HEADSHOT</div>
+            <div class="podium-xp">42,500 XP</div>
+          </div>
+          <div class="podium-block podium-2">
+            <span class="podium-number">2</span>
+          </div>
+        </div>
+        <div class="podium-item" style="order:2">
+          <div style="position:relative;padding-bottom:0">
+            <div class="podium-avatar" style="border-color:#ffd700;box-shadow:0 0 25px rgba(255,215,0,0.6);">JX</div>
+          </div>
+          <div style="margin-bottom:8px">
+            <div class="podium-name" style="color:var(--accent-gold)">JUTTFHX_PRO</div>
+            <div class="podium-xp">&#11088; 58,200 XP</div>
+          </div>
+          <div class="podium-block podium-1">
+            <span class="podium-number">1</span>
+          </div>
+        </div>
+        <div class="podium-item" style="order:3">
+          <div style="position:relative;padding-bottom:0">
+            <div class="podium-avatar" style="border-color:#cd7f32">SR</div>
+          </div>
+          <div style="margin-bottom:8px">
+            <div class="podium-name">SNIPER_RAJU</div>
+            <div class="podium-xp">38,900 XP</div>
+          </div>
+          <div class="podium-block podium-3">
+            <span class="podium-number">3</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+      <div class="lb-filter">
+        <button class="filter-chip active" onclick="filterLB('xp',this)">&#9889; By XP</button>
+        <button class="filter-chip" onclick="filterLB('level',this)">&#128081; By Level</button>
+        <button class="filter-chip" onclick="filterLB('reviews',this)">&#11088; Top Reviewers</button>
+        <button class="filter-chip" onclick="filterLB('weekly',this)">&#128197; This Week</button>
+      </div>
+      <div>
+        <input type="text" class="form-input" style="width:220px;padding:0.4rem 0.8rem" placeholder="Search players..." oninput="searchLB(this.value)">
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="lb-table">
+      <div class="lb-table-header">
+        <div>Rank</div>
+        <div>Player</div>
+        <div>XP</div>
+        <div>Level</div>
+        <div>Device</div>
+      </div>
+      <div id="lb-rows"></div>
+    </div>
+
+    <!-- My Rank Card -->
+    <div class="card" style="margin-top:1.5rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
+      <div style="font-size:0.85rem;color:var(--text-muted)">Your Rank</div>
+      <div style="font-family:var(--font-display);font-size:2rem;font-weight:900;color:var(--text-muted)">#--</div>
+      <div style="flex:1">
+        <div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.5rem">Login to see your ranking</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+      </div>
+      <a href="/login.html" class="btn btn-primary btn-sm">Sign In to Rank</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer"><div class="container"><div class="footer-bottom"><span class="footer-copy">&copy; 2025 JUTTFHX Sensitivity Hub</span></div></div></footer>
+
+<script src="/assets/js/main.js"></script>
+<script>
+const PLAYERS = [
+  {rank:1,name:'JUTTFHX_PRO',initials:'JX',xp:58200,level:24,device:'ROG Phone 8',reviews:45,badge:'gold'},
+  {rank:2,name:'AK_HEADSHOT',initials:'AK',xp:42500,level:19,device:'Realme GT 6',reviews:32,badge:'silver'},
+  {rank:3,name:'SNIPER_RAJU',initials:'SR',xp:38900,level:17,device:'Galaxy S24',reviews:28,badge:'bronze'},
+  {rank:4,name:'DragonFF',initials:'DF',xp:35200,level:16,device:'POCO X5 Pro',reviews:24,badge:''},
+  {rank:5,name:'HeadshotKing',initials:'HK',xp:31800,level:15,device:'OnePlus 12R',reviews:19,badge:''},
+  {rank:6,name:'FF_Legend',initials:'FL',xp:28400,level:14,device:'Samsung A55',reviews:22,badge:''},
+  {rank:7,name:'ProGamer_PK',initials:'PG',xp:25100,level:13,device:'Vivo V30',reviews:15,badge:''},
+  {rank:8,name:'SensKing99',initials:'SK',xp:22600,level:12,device:'Infinix Note 40',reviews:18,badge:''},
+  {rank:9,name:'AimAssist_Ali',initials:'AA',xp:19800,level:11,device:'POCO M6 Pro',reviews:12,badge:''},
+  {rank:10,name:'FastFingers',initials:'FF',xp:17200,level:10,device:'Redmi Note 13',reviews:10,badge:''},
+  {rank:11,name:'ThermalKing',initials:'TK',xp:14900,level:9,device:'Tecno Phantom',reviews:8,badge:''},
+  {rank:12,name:'AimLab_Asad',initials:'AL',xp:12400,level:8,device:'Galaxy A55',reviews:7,badge:''},
+  {rank:13,name:'QuickScope_QS',initials:'QS',xp:10800,level:7,device:'Realme Narzo',reviews:5,badge:''},
+  {rank:14,name:'GhostShot',initials:'GS',xp:9200,level:6,device:'Xiaomi 13',reviews:4,badge:''},
+  {rank:15,name:'BattleReady',initials:'BR',xp:7600,level:5,device:'OPPO A78',reviews:3,badge:''},
+];
+let filtered = [...PLAYERS];
+
+function renderLB(data) {
+  document.getElementById('lb-rows').innerHTML = data.map(p => `
+    <div class="lb-row ${p.rank<=3?'top-3':''}">
+      <div>
+        <span class="rank-badge rank-${p.rank<=3?p.rank:'other'}">${p.rank<=3?['&#127942;','&#129352;','&#129353;'][p.rank-1]:p.rank}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.75rem">
+        <div class="lb-avatar" style="${p.badge==='gold'?'border:2px solid var(--accent-gold)':p.badge==='silver'?'border:2px solid #c0c0c0':p.badge==='bronze'?'border:2px solid #cd7f32':''}">${p.initials}</div>
+        <div>
+          <div style="font-weight:700;font-size:0.9rem">${p.name}</div>
+          <div style="font-size:0.72rem;color:var(--text-muted)">${p.reviews} reviews</div>
+        </div>
+      </div>
+      <div class="xp-badge">${p.xp.toLocaleString()}</div>
+      <div class="level-badge">Lv.${p.level}</div>
+      <div style="font-size:0.8rem;color:var(--text-muted)">${p.device}</div>
+    </div>`).join('');
+}
+
+window.filterLB = function(by, btn) {
+  document.querySelectorAll('.lb-filter .filter-chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  if(by==='xp') filtered.sort((a,b)=>b.xp-a.xp);
+  else if(by==='level') filtered.sort((a,b)=>b.level-a.level);
+  else if(by==='reviews') filtered.sort((a,b)=>b.reviews-a.reviews);
+  filtered = filtered.map((p,i)=>({...p,rank:i+1}));
+  renderLB(filtered);
+};
+
+window.searchLB = function(q) {
+  const lower=q.toLowerCase();
+  renderLB(q ? PLAYERS.filter(p=>p.name.toLowerCase().includes(lower)) : filtered);
+};
+
+renderLB(filtered);
+</script>
+</body>
+</html>

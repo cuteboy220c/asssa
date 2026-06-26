@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Device Database - JUTTFHX Hub</title>
+<meta name="description" content="Search 2000+ Free Fire devices. Get performance scores, sensitivity settings, and community reviews.">
+<link rel="manifest" href="/pwa/manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/theme.css">
+<style>
+.search-hero { padding:120px 0 60px; background:var(--gradient-hero); position:relative; overflow:hidden; }
+.search-hero::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(0,170,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,170,255,0.04) 1px,transparent 1px); background-size:50px 50px; }
+.search-box-wrapper { position:relative; max-width:700px; margin:2rem auto 0; }
+.search-box-big { width:100%; padding:1.1rem 1.5rem 1.1rem 4rem; background:rgba(5,10,20,0.9); border:1px solid rgba(0,170,255,0.25); border-radius:var(--radius-xl); font-size:1.1rem; color:var(--text-primary); font-family:var(--font-primary); transition:var(--transition); outline:none; backdrop-filter:blur(20px); }
+.search-box-big:focus { border-color:var(--accent-blue); box-shadow:0 0 0 4px rgba(0,170,255,0.1); }
+.search-icon { position:absolute; left:1.5rem; top:50%; transform:translateY(-50%); font-size:1.2rem; color:var(--text-muted); pointer-events:none; }
+.search-btn { position:absolute; right:0.5rem; top:50%; transform:translateY(-50%); }
+.filter-bar { display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:2rem; }
+.filter-chip { padding:0.4rem 1rem; background:rgba(5,10,20,0.8); border:1px solid var(--border-glass); border-radius:100px; font-size:0.8rem; color:var(--text-muted); cursor:pointer; transition:var(--transition); }
+.filter-chip.active, .filter-chip:hover { background:var(--accent-blue-dim); border-color:rgba(0,170,255,0.3); color:var(--accent-blue); }
+.device-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:1.5rem; }
+.device-perf-bar { display:flex; align-items:center; gap:0.5rem; margin-top:0.5rem; }
+.device-perf-label { font-size:0.7rem; color:var(--text-muted); min-width:60px; }
+.sort-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; }
+.results-count { font-size:0.85rem; color:var(--text-muted); }
+.load-more-btn { display:block; margin:2.5rem auto 0; }
+/* Device detail modal */
+.device-modal-grid { display:grid; grid-template-columns:1fr 1.5fr; gap:2rem; }
+.spec-table { width:100%; border-collapse:collapse; }
+.spec-table tr { border-bottom:1px solid rgba(255,255,255,0.05); }
+.spec-table td { padding:0.6rem 0.5rem; font-size:0.85rem; }
+.spec-table td:first-child { color:var(--text-muted); }
+.spec-table td:last-child { color:var(--text-primary); font-weight:600; text-align:right; }
+.battle-section { margin-top:3rem; }
+.battle-vs { display:grid; grid-template-columns:1fr auto 1fr; gap:1rem; align-items:center; }
+.vs-badge { font-family:var(--font-display); font-size:2rem; font-weight:900; color:var(--accent-gold); text-shadow:0 0 20px rgba(255,215,0,0.5); text-align:center; }
+@media(max-width:768px) { .device-modal-grid { grid-template-columns:1fr; } .battle-vs { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div id="loading-screen"><div class="loading-logo">DEVICES</div><div class="loading-bar"><div class="loading-bar-fill"></div></div><div class="loading-text">Loading Device Database...</div></div>
+<div class="aurora-bg"></div>
+
+<nav class="navbar" id="navbar">
+  <a href="/index.html" class="navbar-brand"><div class="navbar-logo">JX</div><span class="navbar-title">JUTTFHX <span>Hub</span></span></a>
+  <ul class="navbar-nav" id="nav-links">
+    <li><a href="/index.html">Home</a></li>
+    <li><a href="/device.html" class="active">Devices</a></li>
+    <li><a href="/sensitivity.html">Sensitivity</a></li>
+    <li><a href="/leaderboard.html">Leaderboard</a></li>
+    <li><a href="/hud-gallery.html">HUD</a></li>
+    <li><a href="/blog.html">Blog</a></li>
+    <li><a href="/tournaments.html">Events</a></li>
+  </ul>
+  <div class="navbar-actions" id="nav-actions">
+    <a href="/login.html" class="btn-nav-login">Login</a>
+    <a href="/register.html" class="btn-nav-cta">Join Free</a>
+  </div>
+  <button class="navbar-hamburger" onclick="document.getElementById('nav-links').classList.toggle('mobile-open')">&#9776;</button>
+</nav>
+
+<section class="search-hero">
+  <div class="container" style="position:relative;z-index:2;text-align:center">
+    <div class="section-eyebrow">2000+ Devices</div>
+    <h1 class="section-title">&#128241; Device <span class="highlight">Database</span></h1>
+    <p class="section-desc">Find your exact device and get perfectly optimized Free Fire sensitivity settings.</p>
+    <div class="search-box-wrapper">
+      <span class="search-icon">&#128269;</span>
+      <input type="text" class="search-box-big" id="device-search" placeholder="Search Samsung, Xiaomi, POCO, Realme..." oninput="searchDevices(this.value)" onkeydown="if(event.key==='Enter')searchDevices(this.value)">
+      <button class="btn btn-primary btn-sm search-btn" onclick="searchDevices(document.getElementById('device-search').value)">Search</button>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="margin-top:-2rem">
+  <div class="container">
+    <!-- Filters -->
+    <div class="filter-bar">
+      <button class="filter-chip active" onclick="filterDevices('all',this)">All Devices</button>
+      <button class="filter-chip" onclick="filterDevices('Samsung',this)">Samsung</button>
+      <button class="filter-chip" onclick="filterDevices('Xiaomi',this)">Xiaomi</button>
+      <button class="filter-chip" onclick="filterDevices('Realme',this)">Realme</button>
+      <button class="filter-chip" onclick="filterDevices('POCO',this)">POCO</button>
+      <button class="filter-chip" onclick="filterDevices('OnePlus',this)">OnePlus</button>
+      <button class="filter-chip" onclick="filterDevices('Vivo',this)">Vivo</button>
+      <button class="filter-chip" onclick="filterDevices('Infinix',this)">Infinix</button>
+      <button class="filter-chip" onclick="filterDevices('flagship',this)">&#127942; Flagship</button>
+      <button class="filter-chip" onclick="filterDevices('midrange',this)">&#128293; Mid-Range</button>
+      <button class="filter-chip" onclick="filterDevices('budget',this)">&#128181; Budget</button>
+    </div>
+    <div class="sort-bar">
+      <span class="results-count" id="results-count">Showing all devices</span>
+      <select class="form-input form-select" style="width:auto;padding:0.4rem 2rem 0.4rem 0.75rem" onchange="sortDevices(this.value)">
+        <option value="rating">Sort: Top Rated</option>
+        <option value="views">Most Viewed</option>
+        <option value="name">Name A-Z</option>
+        <option value="score">Performance Score</option>
+      </select>
+    </div>
+    <div class="device-grid" id="device-grid">
+      <!-- Skeleton -->
+      <div class="skeleton" style="height:280px;border-radius:var(--radius-lg)"></div>
+      <div class="skeleton" style="height:280px;border-radius:var(--radius-lg)"></div>
+      <div class="skeleton" style="height:280px;border-radius:var(--radius-lg)"></div>
+      <div class="skeleton" style="height:280px;border-radius:var(--radius-lg)"></div>
+      <div class="skeleton" style="height:280px;border-radius:var(--radius-lg)"></div>
+      <div class="skeleton" style="height:280px;border-radius:var(--radius-lg)"></div>
+    </div>
+    <button class="btn btn-outline load-more-btn" id="load-more-btn" onclick="loadMore()">Load More Devices</button>
+  </div>
+</section>
+
+<!-- DEVICE BATTLE -->
+<section class="section battle-section" id="battle">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Head-to-Head</div>
+      <h2 class="section-title">&#9876;&#65039; Device <span class="highlight">Battle Arena</span></h2>
+      <p class="section-desc">Compare two devices and find out which one dominates Free Fire.</p>
+    </div>
+    <div class="battle-vs">
+      <div class="card" style="text-align:center">
+        <h4 style="margin-bottom:1rem;color:var(--accent-blue)">Device A</h4>
+        <select class="form-input form-select" id="battle-a">
+          <option value="">Select Device A...</option>
+        </select>
+      </div>
+      <div class="vs-badge">VS</div>
+      <div class="card" style="text-align:center">
+        <h4 style="margin-bottom:1rem;color:var(--accent-gold)">Device B</h4>
+        <select class="form-input form-select" id="battle-b">
+          <option value="">Select Device B...</option>
+        </select>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.5rem">
+      <button class="btn btn-gold btn-lg" onclick="startBattle()">&#9876;&#65039; Start Battle!</button>
+    </div>
+    <div id="battle-result" style="margin-top:2rem"></div>
+  </div>
+</section>
+
+<!-- Device Detail Modal -->
+<div class="modal-overlay" id="device-modal">
+  <div class="modal" style="max-width:780px">
+    <button class="modal-close" onclick="document.getElementById('device-modal').classList.remove('open')">&#215;</button>
+    <div id="device-modal-content"></div>
+  </div>
+</div>
+
+<footer class="footer"><div class="container"><div class="footer-bottom"><span class="footer-copy">&copy; 2025 JUTTFHX Sensitivity Hub</span></div></div></footer>
+
+<script src="/assets/js/main.js"></script>
+<script type="module">
+import { calculateDeviceScore } from '/assets/js/sensitivity-ai.js';
+
+// Sample device database
+const DEVICES = [
+  { id:'1', name:'Galaxy A55 5G', brand:'Samsung', tier:'midrange', emoji:'&#128241;', score:78, rating:4.8, reviews:234, fps:'60', gpu:'Xclipse 530', ram:8, screen:6.6, refresh:120, battery:5000, processor:'Exynos 1480', resolution:'2340x1080', os:'Android 14', gen:{ general:95, redDot:72, x2Scope:68, x4Scope:55, sniper:32, freeLook:105 }, tags:['120Hz','5G'] },
+  { id:'2', name:'POCO X5 Pro 5G', brand:'POCO', tier:'midrange', emoji:'&#128241;', score:82, rating:4.7, reviews:189, fps:'60', gpu:'Adreno 642L', ram:8, screen:6.67, refresh:120, battery:5000, processor:'Snapdragon 778G', resolution:'2400x1080', os:'Android 13', gen:{ general:100, redDot:75, x2Scope:70, x4Scope:58, sniper:35, freeLook:110 }, tags:['120Hz','5G','Gaming'] },
+  { id:'3', name:'Realme GT 6', brand:'Realme', tier:'flagship', emoji:'&#128241;', score:88, rating:4.9, reviews:156, fps:'Unlocked', gpu:'Adreno 750', ram:12, screen:6.78, refresh:120, battery:5500, processor:'Snapdragon 8s Gen 3', resolution:'2780x1264', os:'Android 14', gen:{ general:105, redDot:78, x2Scope:73, x4Scope:60, sniper:36, freeLook:115 }, tags:['120Hz','Flagship','Gaming'] },
+  { id:'4', name:'OnePlus 12R', brand:'OnePlus', tier:'flagship', emoji:'&#128241;', score:85, rating:4.9, reviews:312, fps:'Unlocked', gpu:'Adreno 740', ram:16, screen:6.78, refresh:120, battery:5500, processor:'Snapdragon 8 Gen 2', resolution:'2780x1264', os:'Android 14', gen:{ general:103, redDot:76, x2Scope:72, x4Scope:59, sniper:35, freeLook:113 }, tags:['120Hz','Flagship'] },
+  { id:'5', name:'Xiaomi Redmi Note 13 Pro', brand:'Xiaomi', tier:'midrange', emoji:'&#128241;', score:74, rating:4.6, reviews:278, fps:'60', gpu:'Adreno 610', ram:8, screen:6.67, refresh:120, battery:5100, processor:'Snapdragon 7s Gen 2', resolution:'2712x1220', os:'Android 13', gen:{ general:92, redDot:70, x2Scope:66, x4Scope:53, sniper:30, freeLook:102 }, tags:['120Hz'] },
+  { id:'6', name:'Infinix Note 40 Pro', brand:'Infinix', tier:'midrange', emoji:'&#128241;', score:70, rating:4.4, reviews:98, fps:'60', gpu:'Mali-G57', ram:8, screen:6.78, refresh:120, battery:4600, processor:'Helio G99 Ultimate', resolution:'2460x1080', os:'Android 14', gen:{ general:90, redDot:68, x2Scope:64, x4Scope:51, sniper:28, freeLook:100 }, tags:['120Hz'] },
+  { id:'7', name:'ASUS ROG Phone 8', brand:'ASUS', tier:'flagship', emoji:'&#128241;', score:98, rating:5.0, reviews:87, fps:'Unlocked', gpu:'Adreno 750', ram:16, screen:6.78, refresh:165, battery:6000, processor:'Snapdragon 8 Gen 3', resolution:'2400x1080', os:'Android 14', gen:{ general:110, redDot:82, x2Scope:76, x4Scope:63, sniper:38, freeLook:120 }, tags:['165Hz','Gaming','Flagship'] },
+  { id:'8', name:'Vivo V30', brand:'Vivo', tier:'midrange', emoji:'&#128241;', score:72, rating:4.5, reviews:134, fps:'60', gpu:'Adreno 660', ram:8, screen:6.78, refresh:120, battery:5000, processor:'Snapdragon 7 Gen 3', resolution:'2800x1260', os:'Android 14', gen:{ general:93, redDot:70, x2Scope:66, x4Scope:54, sniper:31, freeLook:103 }, tags:['120Hz'] },
+  { id:'9', name:'Tecno Phantom X2 Pro', brand:'Tecno', tier:'flagship', emoji:'&#128241;', score:76, rating:4.6, reviews:67, fps:'60', gpu:'Mali-G610 MP6', ram:12, screen:6.8, refresh:120, battery:5160, processor:'Dimensity 9000', resolution:'2400x1080', os:'Android 13', gen:{ general:96, redDot:73, x2Scope:69, x4Scope:56, sniper:33, freeLook:106 }, tags:['120Hz','Flagship'] },
+  { id:'10', name:'Samsung Galaxy S24', brand:'Samsung', tier:'flagship', emoji:'&#128241;', score:94, rating:4.9, reviews:421, fps:'Unlocked', gpu:'Xclipse 940', ram:8, screen:6.2, refresh:120, battery:4000, processor:'Snapdragon 8 Gen 3', resolution:'2340x1080', os:'Android 14', gen:{ general:107, redDot:80, x2Scope:74, x4Scope:61, sniper:37, freeLook:117 }, tags:['120Hz','Flagship'] },
+  { id:'11', name:'Realme Narzo N65', brand:'Realme', tier:'budget', emoji:'&#128241;', score:52, rating:4.1, reviews:203, fps:'30-40', gpu:'Mali-G52', ram:4, screen:6.67, refresh:90, battery:5000, processor:'Helio G85', resolution:'1600x720', os:'Android 13', gen:{ general:80, redDot:60, x2Scope:56, x4Scope:44, sniper:24, freeLook:90 }, tags:['90Hz','Budget'] },
+  { id:'12', name:'POCO M6 Pro', brand:'POCO', tier:'budget', emoji:'&#128241;', score:63, rating:4.3, reviews:178, fps:'40-50', gpu:'Mali-G610', ram:8, screen:6.67, refresh:120, battery:5000, processor:'Helio G99', resolution:'2400x1080', os:'Android 13', gen:{ general:87, redDot:65, x2Scope:62, x4Scope:49, sniper:27, freeLook:96 }, tags:['120Hz'] },
+];
+
+let filteredDevices = [...DEVICES];
+let displayCount = 8;
+let currentFilter = 'all';
+
+function getGradeColor(score) {
+  if(score>=90) return '#ffd700'; if(score>=75) return '#00c864'; if(score>=60) return '#00aaff'; return '#ff8844';
+}
+
+function renderDevices(devices, append=false) {
+  const grid = document.getElementById('device-grid');
+  const toShow = devices.slice(0, displayCount);
+  document.getElementById('results-count').textContent = `Showing ${Math.min(displayCount,devices.length)} of ${devices.length} devices`;
+  const html = toShow.map(d => `
+    <div class="device-card" onclick="openDevice('${d.id}')">
+      <div class="device-card-img">${d.emoji}
+        <div style="position:absolute;top:10px;right:10px;z-index:2">
+          <span class="badge badge-blue">${d.tier}</span>
+        </div>
+        ${d.tags.includes('Gaming') ? '<div style="position:absolute;top:10px;left:10px;z-index:2"><span class="badge badge-gold">&#127918; Gaming</span></div>' : ''}
+      </div>
+      <div class="device-card-body">
+        <div class="device-card-brand">${d.brand}</div>
+        <div class="device-card-name">${d.name}</div>
+        <div class="device-card-specs">${d.tags.map(t=>`<span class="badge badge-blue" style="font-size:0.65rem">${t}</span>`).join('')}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
+          <div class="device-card-rating">
+            <span class="stars">${'&#9733;'.repeat(Math.floor(d.rating))}${d.rating%1?'&#9734;':''}</span>
+            <span class="rating-count">(${d.reviews})</span>
+          </div>
+          <span style="font-family:var(--font-display);font-size:0.8rem;color:${getGradeColor(d.score)};font-weight:700">${d.score}/100</span>
+        </div>
+        <div class="device-perf-bar">
+          <span class="device-perf-label">Score</span>
+          <div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:${d.score}%" data-width="${d.score}%"></div></div>
+        </div>
+        <div style="display:flex;gap:0.5rem;margin-top:0.75rem">
+          <a href="/sensitivity.html" class="btn btn-primary btn-sm" style="flex:1;justify-content:center" onclick="event.stopPropagation();sessionStorage.setItem('device','${d.name}')">&#9889; Get Sensitivity</a>
+        </div>
+      </div>
+    </div>`).join('');
+  grid.innerHTML = html;
+  document.getElementById('load-more-btn').style.display = devices.length > displayCount ? 'block' : 'none';
+}
+
+window.searchDevices = function(q) {
+  const lower = q.toLowerCase();
+  filteredDevices = q ? DEVICES.filter(d => d.name.toLowerCase().includes(lower)||d.brand.toLowerCase().includes(lower)||d.tags.some(t=>t.toLowerCase().includes(lower))) : [...DEVICES];
+  displayCount = 8;
+  renderDevices(filteredDevices);
+};
+
+window.filterDevices = function(filter, btn) {
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = filter;
+  if(filter==='all') { filteredDevices = [...DEVICES]; }
+  else if(['flagship','midrange','budget'].includes(filter)) { filteredDevices = DEVICES.filter(d=>d.tier===filter); }
+  else { filteredDevices = DEVICES.filter(d=>d.brand===filter); }
+  displayCount = 8;
+  renderDevices(filteredDevices);
+};
+
+window.sortDevices = function(by) {
+  if(by==='rating') filteredDevices.sort((a,b)=>b.rating-a.rating);
+  else if(by==='views') filteredDevices.sort((a,b)=>b.reviews-a.reviews);
+  else if(by==='name') filteredDevices.sort((a,b)=>a.name.localeCompare(b.name));
+  else if(by==='score') filteredDevices.sort((a,b)=>b.score-a.score);
+  renderDevices(filteredDevices);
+};
+
+window.loadMore = function() { displayCount += 6; renderDevices(filteredDevices); };
+
+window.openDevice = function(id) {
+  const d = DEVICES.find(x=>x.id===id);
+  if(!d) return;
+  document.getElementById('device-modal-content').innerHTML = `
+    <div class="modal-title">${d.emoji} ${d.name}</div>
+    <div style="display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap">
+      <span class="badge badge-blue">${d.brand}</span>
+      <span class="badge badge-gold">${d.tier}</span>
+      ${d.tags.map(t=>`<span class="badge badge-green">${t}</span>`).join('')}
+    </div>
+    <div class="device-modal-grid">
+      <div>
+        <div style="background:linear-gradient(135deg,rgba(0,30,60,0.8),rgba(0,15,30,0.9));border-radius:var(--radius-md);padding:2rem;text-align:center;font-size:5rem;margin-bottom:1rem">${d.emoji}</div>
+        <div style="text-align:center">
+          <div style="font-family:var(--font-display);font-size:2.5rem;font-weight:900;color:${getGradeColor(d.score)}">${d.score}</div>
+          <div style="color:var(--text-muted);font-size:0.8rem">Performance Score / 100</div>
+        </div>
+        <div style="margin-top:1rem;display:flex;gap:0.75rem;justify-content:center">
+          <div style="text-align:center"><div style="font-family:var(--font-display);color:var(--accent-gold)">${d.rating}&#9733;</div><div style="font-size:0.7rem;color:var(--text-muted)">Rating</div></div>
+          <div style="text-align:center"><div style="font-family:var(--font-display);color:var(--accent-blue)">${d.reviews}</div><div style="font-size:0.7rem;color:var(--text-muted)">Reviews</div></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.8rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.75rem">Specifications</div>
+        <table class="spec-table">
+          <tr><td>Processor</td><td>${d.processor}</td></tr>
+          <tr><td>RAM</td><td>${d.ram} GB</td></tr>
+          <tr><td>Screen</td><td>${d.screen}" ${d.refresh}Hz</td></tr>
+          <tr><td>GPU</td><td>${d.gpu}</td></tr>
+          <tr><td>Resolution</td><td>${d.resolution}</td></tr>
+          <tr><td>Battery</td><td>${d.battery} mAh</td></tr>
+          <tr><td>OS</td><td>${d.os}</td></tr>
+          <tr><td>FF FPS</td><td>${d.fps} FPS</td></tr>
+        </table>
+        <div style="margin-top:1.5rem">
+          <div style="font-size:0.8rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.75rem">&#9889; Recommended Sensitivity</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem">
+            ${Object.entries(d.gen).map(([k,v])=>`<div style="background:rgba(0,170,255,0.06);border:1px solid rgba(0,170,255,0.1);border-radius:8px;padding:0.5rem;text-align:center"><div style="font-size:0.6rem;color:var(--text-muted)">${k.replace(/([A-Z])/g,' $1').trim()}</div><div style="font-family:var(--font-display);font-size:1.1rem;color:var(--accent-blue)">${v}</div></div>`).join('')}
+          </div>
+        </div>
+        <div style="margin-top:1.5rem;display:flex;gap:0.75rem;flex-wrap:wrap">
+          <a href="/sensitivity.html" class="btn btn-primary btn-sm">&#9889; Full Generator</a>
+          <button class="btn btn-ghost btn-sm" onclick="copyToClipboard('General:${d.gen.general}, Red Dot:${d.gen.redDot}, 2x:${d.gen.x2Scope}, 4x:${d.gen.x4Scope}', 'Sensitivity copied!')">&#128203; Copy</button>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('device-modal').classList.add('open');
+};
+
+// Battle
+const battleSelect = (id) => { const sel = document.getElementById(id); DEVICES.forEach(d=>{const o=document.createElement('option');o.value=d.id;o.textContent=d.brand+' '+d.name;sel.appendChild(o);}); };
+battleSelect('battle-a'); battleSelect('battle-b');
+
+window.startBattle = function() {
+  const a = DEVICES.find(d=>d.id===document.getElementById('battle-a').value);
+  const b = DEVICES.find(d=>d.id===document.getElementById('battle-b').value);
+  if(!a||!b){showToast('Select two devices to battle!','warning');return;}
+  const winner = a.score > b.score ? a : b;
+  const metrics = [['Performance Score', a.score, b.score],['RAM', a.ram, b.ram],['Refresh Rate', a.refresh, b.refresh],['Battery', a.battery, b.battery],['Rating', a.rating, b.rating]];
+  document.getElementById('battle-result').innerHTML = `
+    <div class="card" style="text-align:center;margin-bottom:1.5rem">
+      <div class="badge badge-gold" style="display:inline-flex;margin-bottom:0.75rem">&#127942; WINNER</div>
+      <div style="font-size:3rem">${winner.emoji}</div>
+      <div style="font-family:var(--font-display);font-size:1.3rem;font-weight:700">${winner.brand} ${winner.name}</div>
+      <div style="color:var(--text-muted);font-size:0.85rem">Score: ${winner.score}/100</div>
+    </div>
+    <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse">
+      <thead><tr><th style="padding:0.75rem;text-align:left;color:var(--text-muted)">Metric</th><th style="padding:0.75rem;text-align:center;color:var(--accent-blue)">${a.brand} ${a.name}</th><th style="padding:0.75rem;text-align:center;color:var(--accent-gold)">${b.brand} ${b.name}</th></tr></thead>
+      <tbody>${metrics.map(([label,va,vb])=>`<tr style="border-top:1px solid rgba(255,255,255,0.04)"><td style="padding:0.75rem;color:var(--text-secondary)">${label}</td><td style="padding:0.75rem;text-align:center;font-weight:700;color:${va>=vb?'#00c864':'#ff4444'}">${va}</td><td style="padding:0.75rem;text-align:center;font-weight:700;color:${vb>=va?'#00c864':'#ff4444'}">${vb}</td></tr>`).join('')}</tbody>
+    </table></div>`;
+};
+
+renderDevices(filteredDevices);
+</script>
+</body>
+</html>
